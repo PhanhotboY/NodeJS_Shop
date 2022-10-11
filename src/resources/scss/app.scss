@@ -1,0 +1,15 @@
+@use './libraries/grid';
+@use './libraries/class';
+
+@use './partials/header';
+@use './partials/footer';
+
+@use './pages/home';
+@use './pages/products';
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Helvetica Neue, Helvetica, Arial;
+}

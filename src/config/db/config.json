@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "phan0344800574",
+    "database": "shopee",
+    "host": "127.0.0.1",
+    "port": "5433",
+    "dialect": "postgres",
+    "logging": false,
+    "query": {
+    "raw": true
+    },
+    "timezome": "+07:00"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
