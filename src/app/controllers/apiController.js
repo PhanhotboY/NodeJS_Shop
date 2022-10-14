@@ -56,6 +56,22 @@ const apiController = {
 
         return res.status(200).json(data);
     },
+
+    async handleDeletePermanentlyData(req, res, next) {
+        const userId = req.query.id;
+
+        let data = await crudService.deletePermanentlyUser(userId);
+
+        return res.status(200).json(data);
+    },
+
+    async handleRestoreData(req, res, next) {
+        const userId = req.query.id;
+
+        let data = await crudService.restoreUser(userId);
+
+        return res.status(200).json(data);
+    },
 };
 
 module.exports = apiController;

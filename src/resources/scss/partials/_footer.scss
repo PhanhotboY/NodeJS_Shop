@@ -1,21 +1,22 @@
 @import '../libraries/variables';
 
 footer {
-    font-size: 0.75rem;
+    font-size  : 0.75rem;
     line-height: 1.4rem;
-    border-top: 4px solid $sub3;
-    color: rgba(#000, 0.8);
+    border-top : 4px solid $sub3;
+    color      : rgba(#000, 0.8);
 }
 
 .footer_QaA {
     margin: 60px 0;
-    > div {
+
+    >div {
         margin-bottom: 15px;
 
         h3 {
-            font-size: 0.875rem;
-            line-height: 1.7rem;
-            color: #000;
+            font-size    : 0.875rem;
+            line-height  : 1.7rem;
+            color        : #000;
             margin-bottom: 4px;
         }
 
@@ -30,12 +31,12 @@ footer {
 }
 
 .footer_category {
-    border-top: 1px solid rgba(#000, 0.05);
+    border-top : 1px solid rgba(#000, 0.05);
     padding-top: 61px;
 
     .footer_category_title {
         font-size: 0.875rem;
-        color: rgba(#000, 0.6);
+        color    : rgba(#000, 0.6);
     }
 
     .footer_category_body {
@@ -45,7 +46,7 @@ footer {
 
         ul {
             list-style: none;
-            color: rgba(#000, 0.55);
+            color     : rgba(#000, 0.55);
         }
 
         li {

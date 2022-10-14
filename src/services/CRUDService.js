@@ -104,12 +104,7 @@ const crudService = {
         try {
             data = await db[capitalizeFirstLetter(dataType)].findAndCountAll({
                 attributes: {
-                    exclude: [
-                        'password',
-                        'createdAt',
-                        'updatedAt',
-                        'deletedAt',
-                    ],
+                    exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
                 },
                 where: {
                     deletedAt: {
@@ -150,12 +145,10 @@ const crudService = {
                         await db.User.update(
                             {
                                 email: updateData.email,
-                                [updateData.password === '' ? '' : 'password']:
-                                    hashedPassword,
+                                [updateData.password === '' ? '' : 'password']: hashedPassword,
                                 first_name: updateData.first_name,
                                 last_name: updateData.last_name,
-                                gender:
-                                    updateData.gender === '1' ? true : false,
+                                gender: updateData.gender === '1' ? true : false,
                                 phone_number: updateData.phone_number,
                                 avatar: updateData.avatar,
                                 address: updateData.address,
@@ -206,7 +199,69 @@ const crudService = {
                     });
                 } catch (err) {
                     reject({
-                        errType: 'update',
+                        errType: 'delete',
+                        message: 'Something wrong!',
+                        errInfo: err,
+                    });
+                }
+            });
+        }
+        return {
+            errType: 'parameter',
+            message: 'missing parameter!',
+        };
+    },
+
+    async deletePermanentlyUser(userId) {
+        if (userId) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    sequelize.transaction(async (trans) => {
+                        await db.User.destroy({
+                            where: { user_id: userId },
+                            transaction: trans,
+                            limit: 1,
+                            force: true,
+                        });
+                    });
+
+                    resolve({
+                        errType: null,
+                        message: 'delete user successfully!',
+                    });
+                } catch (err) {
+                    reject({
+                        errType: 'delete',
+                        message: 'Something wrong!',
+                        errInfo: err,
+                    });
+                }
+            });
+        }
+        return {
+            errType: 'parameter',
+            message: 'missing parameter!',
+        };
+    },
+
+    async restoreUser(userId) {
+        if (userId) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    sequelize.transaction(async (trans) => {
+                        await db.User.restore({
+                            where: { user_id: userId },
+                            transaction: trans,
+                        });
+                    });
+
+                    resolve({
+                        errType: null,
+                        message: 'restore user successfully!',
+                    });
+                } catch (err) {
+                    reject({
+                        errType: 'restore',
                         message: 'Something wrong!',
                         errInfo: err,
                     });
@@ -223,7 +278,7 @@ const crudService = {
         const userData = await sequelize.transaction(async (trans) => {
             return await db.User.findOne(
                 {
-                    attributes: ['email', 'role_id', 'password'],
+                    attributes: ['email', 'role_id', 'password', 'avatar'],
                     where: { email: data.email },
                 },
                 { transaction: trans }
