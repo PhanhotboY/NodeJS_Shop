@@ -2,20 +2,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('flashsales', {
-            flashsaleId: {
-                allowNull: false,
-                autoIncrement: true,
+        await queryInterface.createTable('keywords', {
+            content: {
                 primaryKey: true,
+                allowNull: false,
+                type: Sequelize.STRING,
+            },
+            image: {
+                type: Sequelize.STRING,
+            },
+            searchPerDay: {
                 type: Sequelize.INTEGER,
             },
-            startTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
-            endTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
+            searchPerDay: {
+                type: Sequelize.INTEGER,
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +28,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('flashsales');
+        await queryInterface.dropTable('keywords');
     },
 };

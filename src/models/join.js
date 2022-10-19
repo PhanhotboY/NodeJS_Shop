@@ -3,7 +3,7 @@
 import { Model } from 'sequelize';
 
 module.exports = (sequelize, DataTypes) => {
-    class Allcode extends Model {
+    class Join extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -14,21 +14,20 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    Allcode.init(
+    Join.init(
         {
-            key: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-            type: DataTypes.STRING,
-            image: DataTypes.STRING,
-            valueVi: DataTypes.STRING,
-            valueEn: DataTypes.STRING,
+            flashsaleId: DataTypes.INTEGER,
+            productId: DataTypes.INTEGER,
+            maxQuantity: DataTypes.STRING,
+            discount: DataTypes.STRING,
+            sold: DataTypes.STRING,
         },
         {
             sequelize,
-            modelName: 'Allcode',
-            tableName: 'allcodes',
-            createdAt: false,
-            updatedAt: false,
+            modelName: 'Join',
+            tableName: 'joins',
+            timestamps: true,
         }
     );
-    return Allcode;
+    return Join;
 };

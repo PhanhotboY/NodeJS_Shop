@@ -3,7 +3,7 @@
 import { Model } from 'sequelize';
 
 module.exports = (sequelize, DataTypes) => {
-    class Allcode extends Model {
+    class Brand extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -14,21 +14,24 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    Allcode.init(
+    Brand.init(
         {
-            key: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-            type: DataTypes.STRING,
-            image: DataTypes.STRING,
-            valueVi: DataTypes.STRING,
-            valueEn: DataTypes.STRING,
+            brandId: {
+                primaryKey: true,
+                autoIncrement: true,
+                type: DataTypes.INTEGER,
+            },
+            userId: DataTypes.INTEGER,
+            logo: DataTypes.STRING,
+            promoTextVi: DataTypes.STRING,
+            promoTextEn: DataTypes.STRING,
         },
         {
             sequelize,
-            modelName: 'Allcode',
-            tableName: 'allcodes',
-            createdAt: false,
-            updatedAt: false,
+            modelName: 'Brand',
+            tableName: 'brands',
+            timestamps: true,
         }
     );
-    return Allcode;
+    return Brand;
 };

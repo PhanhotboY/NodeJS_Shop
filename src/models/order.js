@@ -16,21 +16,16 @@ module.exports = (sequelize, DataTypes) => {
 
     Order.init(
         {
-            order_id: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
-            user_id: DataTypes.INTEGER,
-            products: DataTypes.JSONB,
-            status_id: DataTypes.STRING,
-            order_time: DataTypes.DATE,
+            orderId: DataTypes.INTEGER,
+            productId: DataTypes.INTEGER,
+            quantity: DataTypes.STRING,
         },
         {
             sequelize,
             modelName: 'Order',
             tableName: 'orders',
-            timestamps: true,
+            createdAt: false,
+            updatedAt: false,
         }
     );
     return Order;

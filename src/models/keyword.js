@@ -3,7 +3,7 @@
 import { Model } from 'sequelize';
 
 module.exports = (sequelize, DataTypes) => {
-    class Allcode extends Model {
+    class Keyword extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -14,21 +14,22 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    Allcode.init(
+    Keyword.init(
         {
-            key: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-            type: DataTypes.STRING,
+            content: {
+                primaryKey: true,
+                type: DataTypes.STRING,
+            },
             image: DataTypes.STRING,
-            valueVi: DataTypes.STRING,
-            valueEn: DataTypes.STRING,
+            searchPerDay: DataTypes.INTEGER,
+            searchPerMonth: DataTypes.INTEGER,
         },
         {
             sequelize,
-            modelName: 'Allcode',
-            tableName: 'allcodes',
-            createdAt: false,
-            updatedAt: false,
+            modelName: 'Keyword',
+            tableName: 'keywords',
+            timestamps: true,
         }
     );
-    return Allcode;
+    return Keyword;
 };

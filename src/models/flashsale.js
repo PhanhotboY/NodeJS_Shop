@@ -16,13 +16,13 @@ module.exports = (sequelize, DataTypes) => {
 
     Flashsale.init(
         {
-            flashsale_id: {
+            flashsaleId: {
                 primaryKey: true,
                 autoIncrement: true,
                 type: DataTypes.INTEGER,
             },
-            duration: DataTypes.STRING,
-            date: DataTypes.DATE,
+            startTime: DataTypes.DATE,
+            endTime: DataTypes.DATE,
         },
         {
             sequelize,

@@ -3,7 +3,7 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('Users', {
-            user_id: {
+            userId: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
@@ -15,16 +15,16 @@ module.exports = {
             password: {
                 type: Sequelize.STRING,
             },
-            first_name: {
+            firstName: {
                 type: Sequelize.STRING,
             },
-            last_name: {
+            lastName: {
                 type: Sequelize.STRING,
             },
             gender: {
                 type: Sequelize.BOOLEAN,
             },
-            phone_number: {
+            phoneNumber: {
                 type: Sequelize.STRING,
             },
             avatar: {
@@ -33,7 +33,13 @@ module.exports = {
             address: {
                 type: Sequelize.STRING,
             },
-            role_id: {
+            recentlySearch: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
+            },
+            roleId: {
+                type: Sequelize.STRING,
+            },
+            shopType: {
                 type: Sequelize.STRING,
             },
             createdAt: {

@@ -16,29 +16,23 @@ module.exports = (sequelize, DataTypes) => {
 
     Product.init(
         {
-            product_id: {
+            productId: {
                 primaryKey: true,
                 autoIncrement: true,
                 type: DataTypes.INTEGER,
             },
             title: DataTypes.STRING,
-            discount: DataTypes.STRING,
-            origin_price: DataTypes.STRING,
-            flashsale_discount: DataTypes.STRING,
-            total_remainder: DataTypes.STRING,
-            total_sold: DataTypes.STRING,
-            total_review: DataTypes.STRING,
-            rating: DataTypes.STRING,
             description: DataTypes.STRING,
-            user_id: DataTypes.INTEGER,
-            flag_id: DataTypes.STRING,
-            overlay_id: DataTypes.STRING,
-            brand_id: DataTypes.STRING,
-            flashsale_id: DataTypes.INTEGER,
+            discount: DataTypes.STRING,
+            originPrice: DataTypes.STRING,
+            totalRemainder: DataTypes.STRING,
+            totalSold: DataTypes.STRING,
+            userId: DataTypes.INTEGER,
+            brandId: DataTypes.INTEGER,
+            overlay: DataTypes.STRING,
             image: DataTypes.ARRAY(DataTypes.STRING),
             deals: DataTypes.ARRAY(DataTypes.STRING),
-            categories: DataTypes.ARRAY(DataTypes.STRING),
-            relate_keyword: DataTypes.ARRAY(DataTypes.STRING),
+            category: DataTypes.STRING,
         },
         {
             sequelize,

@@ -2,48 +2,38 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('products', {
-            productId: {
+        await queryInterface.createTable('vouchers', {
+            code: {
                 allowNull: false,
-                autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
-            },
-            title: {
                 type: Sequelize.STRING,
-            },
-            description: {
-                type: Sequelize.STRING,
-            },
-            discount: {
-                type: Sequelize.STRING,
-            },
-            originPrice: {
-                type: Sequelize.STRING,
-            },
-            totalRemainder: {
-                type: Sequelize.STRING,
-            },
-            total_sold: {
-                type: Sequelize.STRING,
-            },
-            userId: {
-                type: Sequelize.INTEGER,
-            },
-            brandId: {
-                type: Sequelize.INTEGER,
-            },
-            overlay: {
-                type: Sequelize.STRING,
-            },
-            image: {
-                type: Sequelize.ARRAY(Sequelize.STRING),
-            },
-            deals: {
-                type: Sequelize.ARRAY(Sequelize.STRING),
             },
             category: {
                 type: Sequelize.STRING,
+            },
+            percent: {
+                type: Sequelize.STRING,
+            },
+            maxDiscount: {
+                type: Sequelize.STRING,
+            },
+            minOrder: {
+                type: Sequelize.STRING,
+            },
+            quantity: {
+                type: Sequelize.STRING,
+            },
+            type: {
+                type: Sequelize.STRING,
+            },
+            quantityUsed: {
+                type: Sequelize.STRING,
+            },
+            startTime: {
+                type: Sequelize.DATE,
+            },
+            expire: {
+                type: Sequelize.DATE,
             },
             createdAt: {
                 allowNull: false,
@@ -56,6 +46,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('products');
+        await queryInterface.dropTable('vouchers');
     },
 };

@@ -2,20 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('flashsales', {
+        await queryInterface.createTable('joins', {
             flashsaleId: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            startTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
+            productId: {
+                type: Sequelize.INTEGER,
             },
-            endTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
+            maxQuantity: {
+                type: Sequelize.STRING,
+            },
+            discount: {
+                type: Sequelize.STRING,
+            },
+            sold: {
+                type: Sequelize.STRING,
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +29,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('flashsales');
+        await queryInterface.dropTable('joins');
     },
 };

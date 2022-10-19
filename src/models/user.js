@@ -16,20 +16,22 @@ module.exports = (sequelize, DataTypes) => {
 
     User.init(
         {
-            user_id: {
+            userId: {
                 primaryKey: true,
                 type: DataTypes.INTEGER,
                 autoIncrement: true,
             },
             email: DataTypes.STRING,
             password: DataTypes.STRING,
-            first_name: DataTypes.STRING,
-            last_name: DataTypes.STRING,
+            firstName: DataTypes.STRING,
+            lastName: DataTypes.STRING,
             gender: DataTypes.BOOLEAN,
-            phone_number: DataTypes.STRING,
+            phoneNumber: DataTypes.STRING,
             avatar: DataTypes.STRING,
             address: DataTypes.STRING,
-            role_id: DataTypes.STRING,
+            recentlySearch: DataTypes.ARRAY(DataTypes.STRING),
+            roleId: DataTypes.STRING,
+            shopType: DataTypes.STRING,
         },
         {
             sequelize,

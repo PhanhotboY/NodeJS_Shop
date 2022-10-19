@@ -2,27 +2,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('allcodes', {
-            key: {
-                allowNull: false,
+        await queryInterface.createTable('notifications', {
+            notificationId: {
                 primaryKey: true,
+                autoIncrement: true,
+                allowNull: false,
+                type: Sequelize.INTEGER,
+            },
+            thumbnail: {
                 type: Sequelize.STRING,
             },
-            type: {
+            title: {
                 type: Sequelize.STRING,
             },
-            image: {
-                type: Sequelize.STRING,
-            },
-            valueVi: {
-                type: Sequelize.STRING,
-            },
-            valueEn: {
+            content: {
                 type: Sequelize.STRING,
             },
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('allcodes');
+        await queryInterface.dropTable('notifications');
     },
 };

@@ -2,20 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('flashsales', {
-            flashsaleId: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
+        await queryInterface.createTable('follows', {
+            follower: {
                 type: Sequelize.INTEGER,
             },
-            startTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
-            endTime: {
-                allowNull: false,
-                type: Sequelize.DATE,
+            following: {
+                type: Sequelize.INTEGER,
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +20,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('flashsales');
+        await queryInterface.dropTable('follows');
     },
 };
