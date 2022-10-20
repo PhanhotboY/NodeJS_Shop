@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
             bannerType: DataTypes.STRING,
             promoType: DataTypes.STRING,
             image: DataTypes.STRING,
-            ordinal: DataTypes.STRING,
+            ordinal: DataTypes.SMALLINT,
             position: DataTypes.STRING,
         },
         {

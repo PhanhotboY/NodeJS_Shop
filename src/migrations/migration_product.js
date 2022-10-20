@@ -19,13 +19,13 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             originPrice: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER.UNSIGNED,
             },
             totalRemainder: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             total_sold: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             userId: {
                 type: Sequelize.INTEGER,

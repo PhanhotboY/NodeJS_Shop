@@ -21,13 +21,13 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             quantity: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             type: {
                 type: Sequelize.STRING,
             },
             quantityUsed: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             startTime: {
                 type: Sequelize.DATE,

@@ -10,7 +10,7 @@ import db from './config/db';
 import helpers from './util/hbsHelpers';
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
 app.use(morgan('combined'));
 

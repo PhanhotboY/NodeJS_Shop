@@ -14,7 +14,7 @@ module.exports = {
             searchPerDay: {
                 type: Sequelize.INTEGER,
             },
-            searchPerDay: {
+            searchPerMonth: {
                 type: Sequelize.INTEGER,
             },
             createdAt: {

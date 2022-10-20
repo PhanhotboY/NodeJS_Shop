@@ -10,7 +10,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             rating: {
-                type: Sequelize.STRING,
+                type: Sequelize.SMALLINT,
             },
             comment: {
                 type: Sequelize.TEXT,

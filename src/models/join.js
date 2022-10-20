@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
         {
             flashsaleId: DataTypes.INTEGER,
             productId: DataTypes.INTEGER,
-            maxQuantity: DataTypes.STRING,
+            maxQuantity: DataTypes.INTEGER,
             discount: DataTypes.STRING,
-            sold: DataTypes.STRING,
+            sold: DataTypes.INTEGER,
         },
         {
             sequelize,

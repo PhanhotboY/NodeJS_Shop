@@ -19,7 +19,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             ordinal: {
-                type: Sequelize.STRING,
+                type: Sequelize.SMALLINT,
             },
             position: {
                 type: Sequelize.STRING,

@@ -1,6 +1,4 @@
 const { sequelize } = require('../../config/db');
-import { CommandCompleteMessage } from 'pg-protocol/dist/messages';
-import db from '../../models';
 import userService from '../../services/userService';
 import crudService from '../../services/CRUDService';
 
@@ -17,9 +15,7 @@ const apiController = {
     },
 
     async handleUserSignup(req, res, next) {
-        const signupRespondMessage = await userService.handleUserSignup(
-            req.body
-        );
+        const signupRespondMessage = await userService.handleUserSignup(req.body);
 
         return res.status(200).json(signupRespondMessage);
     },

@@ -8,7 +8,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             quantity: {
-                type: Sequelize.DATE,
+                type: Sequelize.INTEGER,
             },
         });
     },

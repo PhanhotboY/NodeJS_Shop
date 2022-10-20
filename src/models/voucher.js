@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
     Voucher.init(
         {
             code: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
+            type: DataTypes.STRING,
             category: DataTypes.STRING,
             percent: DataTypes.STRING,
             maxDiscount: DataTypes.STRING,
             minOrder: DataTypes.STRING,
-            quantity: DataTypes.STRING,
-            type: DataTypes.STRING,
-            quantityUsed: DataTypes.STRING,
+            quantity: DataTypes.INTEGER,
+            quantityUsed: DataTypes.INTEGER,
             startTime: DataTypes.DATE,
             expire: DataTypes.DATE,
         },

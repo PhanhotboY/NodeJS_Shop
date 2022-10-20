@@ -10,13 +10,13 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             maxQuantity: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             discount: {
                 type: Sequelize.STRING,
             },
             sold: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             createdAt: {
                 allowNull: false,
