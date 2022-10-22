@@ -1,15 +1,20 @@
 import cors from 'cors';
 import path from 'path';
+// import dotenv from 'dotenv';
 import morgan from 'morgan';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { engine } from 'express-handlebars';
+
+//map .env into environment variables (async => import before other file that use env var)
+import 'dotenv/config';
 
 import route from './routes';
 import db from './config/db';
 import helpers from './util/hbsHelpers';
 
 const app = express();
+
 const port = process.env.PORT;
 
 app.use(morgan('combined'));

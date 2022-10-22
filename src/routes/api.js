@@ -4,20 +4,16 @@ const apiRoute = express.Router();
 const apiController = require('../app/controllers/apiController');
 
 //LOGIN
-apiRoute.post('/login', apiController.handleUserLogin);
+apiRoute.post('/user/login', apiController.handleUserLogin);
 
 //SIGN UP
-apiRoute.post('/signup', apiController.handleUserSignup);
+apiRoute.post('/user/signup', apiController.handleUserSignup);
 
 //GET
-apiRoute.get('/get/:type', apiController.handleGetData);
-apiRoute.get('/get-deleted/:type', apiController.handleGetDeletedData);
-apiRoute.put('/update/:type', apiController.handleUpdateData);
-apiRoute.patch('/restore/:type', apiController.handleRestoreData);
-apiRoute.delete('/delete/:type', apiController.handleDeleteData);
-apiRoute.delete(
-    '/delete-permanently/:type',
-    apiController.handleDeletePermanentlyData
-);
+apiRoute.get('/user/all', apiController.handleGetAllUser);
+apiRoute.get('/user/single', apiController.handleGetUser);
+apiRoute.put('/user/update', apiController.handleUpdateUser);
+apiRoute.patch('/user/restore', apiController.handleRestoreUser);
+apiRoute.delete('/user/delete', apiController.handleDeleteUser);
 
 module.exports = apiRoute;

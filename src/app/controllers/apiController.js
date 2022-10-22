@@ -1,15 +1,10 @@
-const { sequelize } = require('../../config/db');
 import userService from '../../services/userService';
-import crudService from '../../services/CRUDService';
 
 const apiController = {
     async handleUserLogin(req, res, next) {
         const { email, password } = req.body;
 
-        const loginRespondMessage = await userService.handleUserLogin({
-            email,
-            password,
-        });
+        const loginRespondMessage = await userService.handleUserLogin({ email, password });
 
         return res.status(200).json(loginRespondMessage);
     },
@@ -20,51 +15,46 @@ const apiController = {
         return res.status(200).json(signupRespondMessage);
     },
 
-    async handleGetData(req, res, next) {
-        const dataType = req.params.type;
+    async handleGetAllUser(req, res, next) {
+        const limit = req.query.limit || 30;
+        const isDeleted = req.query.isDeleted === 'true';
+
+        const data = await userService.getAllUser(limit, isDeleted);
+
+        return res.status(200).json(data);
+    },
+
+    async handleGetUser(req, res, next) {
         const userId = req.query.id;
+        const isDeleted = req.query.isDeleted === 'true';
 
-        let data = await crudService.getUser(dataType, userId);
-
-        return res.status(200).json(data);
-    },
-
-    async handleGetDeletedData(req, res, next) {
-        const dataType = req.params.type;
-
-        let data = await crudService.getDeletedUser(dataType);
+        const data = await userService.getSingleUser(userId, isDeleted);
 
         return res.status(200).json(data);
     },
 
-    async handleUpdateData(req, res, next) {
+    async handleUpdateUser(req, res, next) {
         const updateData = req.body;
 
-        let data = await crudService.updateUser(updateData);
+        const data = await userService.updateUser(updateData);
 
         return res.status(200).json(data);
     },
 
-    async handleDeleteData(req, res, next) {
+    async handleDeleteUser(req, res, next) {
         const userId = req.query.id;
+        const isPermanently = req.query.isPermanently === 'true';
+        console.log(req.query.isPermanently);
 
-        let data = await crudService.deleteUser(userId);
+        const data = await userService.deleteUser(userId, isPermanently);
 
         return res.status(200).json(data);
     },
 
-    async handleDeletePermanentlyData(req, res, next) {
+    async handleRestoreUser(req, res, next) {
         const userId = req.query.id;
 
-        let data = await crudService.deletePermanentlyUser(userId);
-
-        return res.status(200).json(data);
-    },
-
-    async handleRestoreData(req, res, next) {
-        const userId = req.query.id;
-
-        let data = await crudService.restoreUser(userId);
+        const data = await userService.restoreUser(userId);
 
         return res.status(200).json(data);
     },

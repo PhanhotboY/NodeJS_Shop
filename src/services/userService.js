@@ -1,101 +1,169 @@
-import db from '../models';
-import bcrypt from 'bcryptjs';
-import crudService from './CRUDService';
+import { Op } from 'sequelize';
 
-const regexCheckPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
-const regexCheckEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/g;
-const regexCheckURL =
-    /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
-const regexCheckPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+import crudService, { checkValidityData, compareUserPassword, checkUserExist } from './CRUDService';
+
+const modelName = 'User';
 
 const userService = {
-    async handleUserLogin(data) {
-        let validateMessage = {};
-
-        const isUserExist = await checkUserEmail(data.email);
-
-        if (!isUserExist) {
-            validateMessage.errType = 'email';
-            validateMessage.message = 'User is not exist. Please try again!';
-            return validateMessage;
+    async handleUserLogin({ email = '', password = '' }) {
+        if (!(await checkUserExist({ email }))) {
+            return {
+                errType: 'email',
+                message: 'User is not exist. Please try again!',
+            };
         }
 
-        validateMessage = await crudService.compareUserPassword(data);
+        const queryOption = {
+            attributes: ['email', 'roleId', 'password', 'avatar'],
+            where: { email },
+        };
 
-        return validateMessage;
+        const queryData = await crudService.getSingleData(modelName, queryOption);
+
+        if (!queryData.userInfo) {
+            return {
+                errType: 'email',
+                message: 'User not exist. Please try again!',
+            };
+        }
+
+        const { userInfo } = queryData;
+
+        if (compareUserPassword(password, userInfo.password)) {
+            delete userInfo.password;
+            return {
+                errType: null,
+                message: 'Valid password. Welcome!',
+                userInfo,
+            };
+        }
+        return {
+            errType: 'password',
+            message: 'wrong password. Please try again!',
+        };
     },
 
     async handleUserSignup(data) {
-        let validateMessage = await checkValidityData(data);
+        const validateMessage = await checkValidityData({ email: data.email });
 
         if (validateMessage.errType) {
             return validateMessage;
         }
 
-        const isUserExist = await checkUserEmail(data.email);
+        if (await checkUserExist({ email: data.email })) {
+            return {
+                errType: 'email',
+                message: 'Email already exist. Please try another email!',
+            };
+        }
 
-        if (isUserExist) {
-            validateMessage.errType = 'email';
-            validateMessage.message =
-                'Email already exist. Please try another email!';
+        return await crudService.createNewUser(data);
+    },
 
+    async getAllUser(limit, isDeleted) {
+        const queryOption = {
+            attributes: {
+                exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
+            },
+            where: isDeleted
+                ? {
+                      deletedAt: {
+                          [Op.ne]: null,
+                      },
+                  }
+                : {},
+            limit: Number(limit) || 30,
+            paranoid: !isDeleted,
+        };
+
+        return await crudService.getAllData(modelName, queryOption);
+    },
+
+    async getSingleUser(userId, isDeleted) {
+        if (userId) {
+            const queryOption = {
+                attributes: {
+                    exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
+                },
+                where: { userId },
+                paranoid: !isDeleted,
+            };
+
+            return await crudService.getSingleData(modelName, queryOption);
+        }
+
+        return {
+            errType: 'parameter',
+            message: 'missing user id!',
+        };
+    },
+
+    async updateUser(updateData) {
+        const validateMessage = await checkValidityData(updateData);
+
+        if (validateMessage.errType) {
             return validateMessage;
         }
 
-        validateMessage = await crudService.createNewUser(data);
-
-        return validateMessage;
+        return await crudService.updateUser(updateData);
     },
-};
 
-const checkUserEmail = (email) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const user = await db.User.findAll({
-                attributes: ['user_id'],
-                where: { email },
-            });
-            if (user.length) {
-                resolve(true);
+    async deleteUser(userId, isPermanently) {
+        if (userId) {
+            const queryOption = {
+                attributes: ['email'],
+                where: {
+                    userId,
+                    deletedAt: {
+                        [isPermanently ? Op.ne : Op.eq]: null,
+                    },
+                },
+                paranoid: !isPermanently,
+            };
+
+            const queryData = await crudService.getSingleData(modelName, queryOption);
+
+            if (!queryData.userInfo) {
+                return {
+                    errType: 'user',
+                    message: 'User does not exist. Please try again!',
+                };
             }
-            resolve(false);
-        } catch (err) {
-            reject(err);
+
+            const deleteOption = {
+                where: { userId },
+                limit: 1,
+                force: isPermanently,
+            };
+
+            return await crudService.deleteData(modelName, deleteOption);
         }
-    });
-};
 
-const checkValidityData = ({ email, password, phoneNumber, avatarURL }) => {
-    const checkingRes = {
-        errType: null,
-        message: 'Ok',
-    };
+        return {
+            errType: 'parameter',
+            message: 'missing user id!',
+        };
+    },
 
-    if (email && !email.match(regexCheckEmail)) {
-        checkingRes.errType = 'email';
-        checkingRes.message = `Invalid email. Try again!`;
-        return checkingRes;
-    }
+    async restoreUser(userId) {
+        if (!(await checkUserExist({ userId, paranoid: false }))) {
+            return {
+                errType: 'user',
+                message: 'User does not exist. Please try again!',
+            };
+        }
 
-    if (password && !password.match(regexCheckPassword)) {
-        checkingRes.errType = 'password';
-        checkingRes.message = `Invalid password. Try again!`;
-        return checkingRes;
-    }
+        if (userId) {
+            const options = { where: { userId } };
 
-    if (phoneNumber && !phoneNumber.match(regexCheckPhoneNumber)) {
-        checkingRes.errType = 'phoneNumber';
-        checkingRes.message = `Invalid phone number. Try again!`;
-        return checkingRes;
-    }
+            return await crudService.restoreData(modelName, options);
+        }
 
-    if (avatarURL && !avatarURL.match(regexCheckURL)) {
-        checkingRes.errType = 'avatar';
-        checkingRes.message = `Invalid URL. Try again!`;
-        return checkingRes;
-    }
-
-    return checkingRes;
+        return {
+            errType: 'parameter',
+            message: 'missing user id!',
+        };
+    },
 };
 
 export default userService;

@@ -1,9 +1,7 @@
 const { Sequelize } = require('sequelize');
 import { Pool } from 'pg';
 
-const sequelize = new Sequelize(
-    'postgres://postgres:phan0344800574@localhost:5433/shopee'
-);
+const sequelize = new Sequelize('postgres://postgres:phan0344800574@localhost:5433/shopee');
 
 const pool = new Pool({
     user: 'postgres',

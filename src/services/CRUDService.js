@@ -1,8 +1,5 @@
-import { Op } from 'sequelize';
-
 import db, { sequelize } from '../models';
 import bcrypt from 'bcryptjs';
-// import { Sequelize as sequelize } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -14,12 +11,6 @@ const regexCheckPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
 const crudService = {
     async createNewUser(data) {
-        const validateMessage = await checkValidityData(data);
-
-        if (validateMessage.errType) {
-            return validateMessage;
-        }
-
         return new Promise(async (resolve, reject) => {
             try {
                 const hashedPassword = await hashUserPassword(data.password);
@@ -29,13 +20,13 @@ const crudService = {
                         {
                             email: data.email,
                             password: hashedPassword,
-                            first_name: data.firstName,
-                            last_name: data.lastName,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
                             gender: data.gender === '1' ? true : false,
-                            phone_number: data.phoneNumber,
+                            phoneNumber: data.phoneNumber,
                             avatar: data.avatarURL,
                             address: data.address,
-                            role_id: data.role,
+                            roleId: data.roleId,
                         },
                         { transaction: trans }
                     );
@@ -46,95 +37,53 @@ const crudService = {
                     message: 'create user successfully!',
                 });
             } catch (err) {
-                reject(err);
+                reject(err.message);
             }
-        });
+        }).catch((err) => err);
     },
 
-    async getUser(dataType, id) {
-        let data = {};
+    async getAllData(modelName, queryOptions) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const data = await db[modelName].findAll(queryOptions);
 
-        if (id) {
-            if (id === 'all') {
-                try {
-                    data = await db[capitalizeFirstLetter(dataType)].findAll({
-                        attributes: {
-                            exclude: ['password', 'createdAt', 'updatedAt'],
-                        },
-                    });
-                } catch (err) {
-                    return {
-                        errType: 'query',
-                        message: 'Something wrong!',
-                        errInfo: err,
-                    };
-                }
-            } else {
-                try {
-                    data = await db[capitalizeFirstLetter(dataType)].findOne({
-                        where: { [`${dataType}_id`]: id },
-                        attributes: {
-                            exclude: ['password', 'createdAt', 'updatedAt'],
-                        },
-                    });
-                } catch (err) {
-                    return {
-                        errType: 'query',
-                        message: 'Something wrong!',
-                        errInfo: err,
-                    };
-                }
+                resolve({
+                    errType: null,
+                    message: 'all OK!',
+                    userInfo: data,
+                });
+            } catch (err) {
+                reject({
+                    errType: 'query',
+                    message: 'Something wrong!',
+                    errInfo: err.message,
+                });
             }
-            return {
-                errType: null,
-                message: 'all OK!',
-                userInfo: data,
-            };
-        }
-
-        return {
-            errType: 'parameter',
-            message: 'missing parameter!',
-        };
+        }).catch((err) => err);
     },
 
-    async getDeletedUser(dataType) {
-        let data = {};
+    async getSingleData(modelName, queryOptions) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const data = await db[modelName].findOne(queryOptions);
 
-        try {
-            data = await db[capitalizeFirstLetter(dataType)].findAndCountAll({
-                attributes: {
-                    exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
-                },
-                where: {
-                    deletedAt: {
-                        [Op.ne]: null,
-                    },
-                },
-                paranoid: false,
-            });
-        } catch (err) {
-            return {
-                errType: 'query',
-                message: 'Something wrong!',
-                errInfo: err,
-            };
-        }
-        return {
-            errType: null,
-            message: 'all OK!',
-            userInfo: data,
-        };
+                resolve({
+                    errType: null,
+                    message: 'all OK!',
+                    userInfo: data,
+                });
+            } catch (err) {
+                reject({
+                    errType: 'query',
+                    message: 'Something wrong!',
+                    errInfo: err.message,
+                });
+            }
+        }).catch((err) => err);
     },
 
     async updateUser(updateData) {
-        const validateMessage = await checkValidityData(updateData);
-
-        if (validateMessage.errType) {
-            return validateMessage;
-        }
-
-        if (updateData.user_id) {
+        if (updateData.userId) {
             return new Promise(async (resolve, reject) => {
                 try {
                     const hashedPassword = await (updateData.password === ''
@@ -144,18 +93,17 @@ const crudService = {
                     sequelize.transaction(async (trans) => {
                         await db.User.update(
                             {
-                                email: updateData.email,
                                 [updateData.password === '' ? '' : 'password']: hashedPassword,
-                                first_name: updateData.first_name,
-                                last_name: updateData.last_name,
+                                firstName: updateData.firstName,
+                                lastName: updateData.lastName,
                                 gender: updateData.gender === '1' ? true : false,
-                                phone_number: updateData.phone_number,
+                                phoneNumber: updateData.phoneNumber,
                                 avatar: updateData.avatar,
                                 address: updateData.address,
-                                role_id: updateData.role_id,
+                                roleId: updateData.roleId,
                             },
                             {
-                                where: { user_id: updateData.user_id },
+                                where: { userId: updateData.userId },
                                 transaction: trans,
                             }
                         );
@@ -169,10 +117,10 @@ const crudService = {
                     reject({
                         errType: 'update',
                         message: 'Something wrong!',
-                        errInfo: err,
+                        errInfo: err.message,
                     });
                 }
-            });
+            }).catch((err) => err);
         }
 
         return {
@@ -181,158 +129,95 @@ const crudService = {
         };
     },
 
-    async deleteUser(userId) {
-        if (userId) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    sequelize.transaction(async (trans) => {
-                        await db.User.destroy({
-                            where: { user_id: userId },
-                            transaction: trans,
-                            limit: 1,
-                        });
+    async deleteData(modelName, deleteOptions) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                sequelize.transaction(async (trans) => {
+                    await db[modelName].destroy({
+                        ...deleteOptions,
+                        transaction: trans,
                     });
+                });
 
-                    resolve({
-                        errType: null,
-                        message: 'delete user successfully!',
-                    });
-                } catch (err) {
-                    reject({
-                        errType: 'delete',
-                        message: 'Something wrong!',
-                        errInfo: err,
-                    });
-                }
-            });
-        }
-        return {
-            errType: 'parameter',
-            message: 'missing parameter!',
-        };
+                resolve({
+                    errType: null,
+                    message: `delete ${modelName.toLowerCase()} successfully!`,
+                });
+            } catch (err) {
+                reject({
+                    errType: 'delete',
+                    message: 'Something wrong!',
+                    errInfo: err.message,
+                });
+            }
+        }).catch((err) => err);
     },
 
-    async deletePermanentlyUser(userId) {
-        if (userId) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    sequelize.transaction(async (trans) => {
-                        await db.User.destroy({
-                            where: { user_id: userId },
-                            transaction: trans,
-                            limit: 1,
-                            force: true,
-                        });
+    async restoreData(modalName, options) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                sequelize.transaction(async (trans) => {
+                    await db[modalName].restore({
+                        ...options,
+                        transaction: trans,
                     });
+                });
 
-                    resolve({
-                        errType: null,
-                        message: 'delete user successfully!',
-                    });
-                } catch (err) {
-                    reject({
-                        errType: 'delete',
-                        message: 'Something wrong!',
-                        errInfo: err,
-                    });
-                }
-            });
-        }
-        return {
-            errType: 'parameter',
-            message: 'missing parameter!',
-        };
-    },
-
-    async restoreUser(userId) {
-        if (userId) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    sequelize.transaction(async (trans) => {
-                        await db.User.restore({
-                            where: { user_id: userId },
-                            transaction: trans,
-                        });
-                    });
-
-                    resolve({
-                        errType: null,
-                        message: 'restore user successfully!',
-                    });
-                } catch (err) {
-                    reject({
-                        errType: 'restore',
-                        message: 'Something wrong!',
-                        errInfo: err,
-                    });
-                }
-            });
-        }
-        return {
-            errType: 'parameter',
-            message: 'missing parameter!',
-        };
-    },
-
-    async compareUserPassword(data) {
-        const userData = await sequelize.transaction(async (trans) => {
-            return await db.User.findOne(
-                {
-                    attributes: ['email', 'role_id', 'password', 'avatar'],
-                    where: { email: data.email },
-                },
-                { transaction: trans }
-            );
-        });
-        if (bcrypt.compareSync(data.password, userData.password)) {
-            delete userData.password;
-            return {
-                errType: null,
-                message: 'Valid password. Welcome!',
-                userInfo: userData,
-            };
-        }
-        return {
-            errType: 'password',
-            message: 'wrong password. Please try again!',
-        };
+                resolve({
+                    errType: null,
+                    message: `restore ${modalName.toLowerCase()} successfully!`,
+                });
+            } catch (err) {
+                reject({
+                    errType: 'restore',
+                    message: 'Something wrong!',
+                    errInfo: err.message,
+                });
+            }
+        }).catch((err) => err);
     },
 };
 
-const hashUserPassword = (password) => {
+const hashUserPassword = async (password) => {
     return new Promise(async (resolve, reject) => {
         try {
             const hashedPassword = await bcrypt.hashSync(password, salt);
 
             resolve(hashedPassword);
         } catch (err) {
-            reject(err);
+            reject(err.message);
         }
-    });
+    }).catch((err) => err);
 };
 
-const capitalizeFirstLetter = (string) => {
+export const compareUserPassword = (inputPassword, userPassword) => {
+    return bcrypt.compareSync(inputPassword, userPassword);
+};
+
+export const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const checkUserEmail = (email) => {
+export const checkUserExist = async ({ email, userId, paranoid = true }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await db.User.findAll({
-                attributes: ['user_id'],
-                where: { email },
+                attributes: ['userId'],
+                where: { [email ? 'email' : 'userId']: email || userId },
+                paranoid,
             });
+
             if (user.length) {
                 resolve(true);
             }
             resolve(false);
         } catch (err) {
-            reject(err);
+            reject(err.message);
         }
-    });
+    }).catch((err) => err);
 };
 
-const checkValidityData = ({ email, password, phoneNumber, avatarURL }) => {
+export const checkValidityData = ({ email, password, phoneNumber, avatarURL }) => {
     const checkingRes = {
         errType: null,
         message: 'Ok',
