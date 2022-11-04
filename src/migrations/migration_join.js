@@ -3,10 +3,10 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('joins', {
-            flashsaleId: {
+            FlashsaleId: {
                 type: Sequelize.INTEGER,
             },
-            productId: {
+            ProductId: {
                 type: Sequelize.INTEGER,
             },
             maxQuantity: {

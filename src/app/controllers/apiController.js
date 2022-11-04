@@ -1,6 +1,8 @@
 import userService from '../../services/userService';
+import appService from '../../services/appService';
 
 const apiController = {
+    //USER
     async handleUserLogin(req, res, next) {
         const { email, password } = req.body;
 
@@ -57,6 +59,25 @@ const apiController = {
         const data = await userService.restoreUser(userId);
 
         return res.status(200).json(data);
+    },
+
+    async handleAddKeyword(req, res, next) {
+        const { userId } = req.body;
+        const keyword = req.query.keyword;
+
+        const data = await userService.addKeyword(userId, keyword);
+
+        return res.status(200).json(data);
+    },
+
+    async handleGetData(req, res, next) {
+        const slug = req.params.model;
+        const limit = req.query.limit;
+        const id = Number(req.query.id);
+
+        const data = await appService.getData(slug, id, limit);
+
+        res.status(200).json(data);
     },
 };
 

@@ -3,7 +3,7 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('products', {
-            productId: {
+            id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
@@ -19,7 +19,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             originPrice: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
             },
             totalRemainder: {
                 type: Sequelize.INTEGER,
@@ -27,7 +27,7 @@ module.exports = {
             total_sold: {
                 type: Sequelize.INTEGER,
             },
-            userId: {
+            UserId: {
                 type: Sequelize.INTEGER,
             },
             brandId: {

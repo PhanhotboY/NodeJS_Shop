@@ -3,11 +3,11 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('carts', {
-            userId: {
+            UserId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
             },
-            productId: {
+            ProductId: {
                 type: Sequelize.INTEGER,
             },
             quantity: {

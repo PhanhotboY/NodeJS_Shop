@@ -11,16 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Flashsale.belongsToMany(models.Product, { through: models.Join });
         }
     }
 
     Flashsale.init(
         {
-            flashsaleId: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
             startTime: DataTypes.DATE,
             endTime: DataTypes.DATE,
         },

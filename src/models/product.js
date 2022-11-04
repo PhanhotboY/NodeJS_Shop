@@ -11,23 +11,25 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            const allowNullOption = { foreignKey: { allowNull: false } };
+
+            Product.belongsTo(models.User, allowNullOption);
+            Product.belongsTo(models.User, allowNullOption);
+            Product.belongsToMany(models.Receipt, { through: models.Order });
+            Product.belongsToMany(models.User, { through: models.Cart, ...allowNullOption });
+            Product.belongsToMany(models.User, { through: models.Review, ...allowNullOption });
+            Product.belongsToMany(models.Flashsale, { through: models.Join, ...allowNullOption });
         }
     }
 
     Product.init(
         {
-            productId: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
             title: DataTypes.STRING,
             description: DataTypes.STRING,
             discount: DataTypes.STRING,
-            originPrice: DataTypes.INTEGER.UNSIGNED,
+            originPrice: DataTypes.INTEGER,
             totalRemainder: DataTypes.INTEGER,
             totalSold: DataTypes.INTEGER,
-            userId: DataTypes.INTEGER,
             brandId: DataTypes.INTEGER,
             overlay: DataTypes.STRING,
             image: DataTypes.ARRAY(DataTypes.STRING),

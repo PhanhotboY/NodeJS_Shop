@@ -8,7 +8,7 @@
     "dialect": "postgres",
     "logging": false,
     "query": {
-    "raw": true
+    "nest": true
     },
     "timezome": "+07:00"
   },

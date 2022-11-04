@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+import db from '../models';
 
 import crudService, { checkValidityData, compareUserPassword, checkUserExist } from './CRUDService';
 
@@ -20,21 +21,19 @@ const userService = {
 
         const queryData = await crudService.getSingleData(modelName, queryOption);
 
-        if (!queryData.userInfo) {
+        if (!queryData.payload) {
             return {
                 errType: 'email',
                 message: 'User not exist. Please try again!',
             };
         }
 
-        const { userInfo } = queryData;
-
-        if (compareUserPassword(password, userInfo.password)) {
-            delete userInfo.password;
+        if (compareUserPassword(password, queryData.payload.password)) {
+            delete queryData.payload.password;
             return {
                 errType: null,
                 message: 'Valid password. Welcome!',
-                userInfo,
+                userInfo: queryData.payload,
             };
         }
         return {
@@ -76,7 +75,14 @@ const userService = {
             paranoid: !isDeleted,
         };
 
-        return await crudService.getAllData(modelName, queryOption);
+        const response = await crudService.getAllData(modelName, queryOption);
+
+        if (response.payload) {
+            response.userInfo = response.payload;
+            delete response.payload;
+        }
+
+        return response;
     },
 
     async getSingleUser(userId, isDeleted) {
@@ -85,11 +91,19 @@ const userService = {
                 attributes: {
                     exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
                 },
-                where: { userId },
+                where: { id: userId },
+                include: db.Notification,
                 paranoid: !isDeleted,
             };
 
-            return await crudService.getSingleData(modelName, queryOption);
+            const response = await crudService.getSingleData(modelName, queryOption);
+
+            if (response.payload) {
+                response.userInfo = response.payload;
+                delete response.payload;
+            }
+
+            return response;
         }
 
         return {
@@ -163,6 +177,78 @@ const userService = {
             errType: 'parameter',
             message: 'missing user id!',
         };
+    },
+
+    async addKeyword(userId, keyword) {
+        if (!userId) {
+            return {
+                errType: 'parameter',
+                message: 'missing user id!',
+            };
+        }
+
+        if (!keyword) {
+            return {
+                errType: null,
+                message: 'No keywords were added!',
+            };
+        }
+
+        keyword = decodeURIComponent((keyword + '').replace(/\+/g, '%20'));
+
+        const userData = await this.getSingleUser(userId);
+
+        if (userData.errType || !userData.userInfo) return userData;
+
+        const queryOption = {
+            attributes: {
+                exclude: ['image', 'createdAt', 'updatedAt'],
+            },
+            where: { content: keyword },
+        };
+
+        const keywordData = await crudService.getSingleData('Keyword', queryOption);
+
+        if (keywordData.errType) return keywordData;
+
+        if (keywordData.payload) {
+            crudService.updateSingleData(
+                'Keyword',
+                {
+                    where: { content: keyword },
+                },
+                'searchPerDay',
+                keywordData.payload.searchPerDay + 1
+            );
+
+            crudService.updateSingleData(
+                'Keyword',
+                {
+                    where: { content: keyword },
+                },
+                'searchPerMonth',
+                keywordData.payload.searchPerMonth + 1
+            );
+        } else {
+            return {
+                errType: null,
+                message: 'wait a minutes',
+            };
+        }
+
+        const field = 'recentlySearch';
+        const updateValue = userData.userInfo[field];
+        const options = { where: { userId }, limit: 1 };
+
+        if (updateValue.indexOf(keyword) > -1)
+            return {
+                errType: null,
+                message: 'No keywords were added!',
+            };
+
+        updateValue.push(keyword);
+
+        return await crudService.updateSingleData(modelName, options, field, updateValue);
     },
 };
 

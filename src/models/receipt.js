@@ -11,17 +11,13 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Receipt.belongsTo(models.User, { foreignKey: { allowNull: false } });
+            Receipt.belongsToMany(models.Product, { through: models.Order, foreignKey: 'OrderId' });
         }
     }
 
     Receipt.init(
         {
-            orderId: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
-            userId: DataTypes.INTEGER,
             status: DataTypes.STRING,
         },
         {

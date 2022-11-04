@@ -11,16 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Notification.belongsToMany(models.User, { through: 'Receive' });
         }
     }
 
     Notification.init(
         {
-            notificationId: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
             thumbnail: DataTypes.STRING,
             title: DataTypes.STRING,
             content: DataTypes.TEXT,

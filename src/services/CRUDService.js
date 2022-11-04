@@ -50,7 +50,7 @@ const crudService = {
                 resolve({
                     errType: null,
                     message: 'all OK!',
-                    userInfo: data,
+                    payload: data,
                 });
             } catch (err) {
                 reject({
@@ -70,7 +70,7 @@ const crudService = {
                 resolve({
                     errType: null,
                     message: 'all OK!',
-                    userInfo: data,
+                    payload: data,
                 });
             } catch (err) {
                 reject({
@@ -90,8 +90,8 @@ const crudService = {
                         ? ''
                         : hashUserPassword(updateData.password));
 
-                    sequelize.transaction(async (trans) => {
-                        await db.User.update(
+                    const userInfo = await sequelize.transaction(async (trans) => {
+                        return await db.User.update(
                             {
                                 [updateData.password === '' ? '' : 'password']: hashedPassword,
                                 firstName: updateData.firstName,
@@ -104,6 +104,7 @@ const crudService = {
                             },
                             {
                                 where: { userId: updateData.userId },
+                                returning: true,
                                 transaction: trans,
                             }
                         );
@@ -112,6 +113,11 @@ const crudService = {
                     resolve({
                         errType: null,
                         message: 'Update user successfully!',
+                        userInfo: {
+                            email: userInfo[1][0].email,
+                            roleId: userInfo[1][0].roleId,
+                            avatar: userInfo[1][0].avatar,
+                        },
                     });
                 } catch (err) {
                     reject({
@@ -127,6 +133,23 @@ const crudService = {
             errType: 'parameter',
             message: 'missing parameter!',
         };
+    },
+
+    async updateSingleData(modelName, options, field, value) {
+        try {
+            await db[modelName].update({ [field]: value }, options);
+
+            return {
+                errType: null,
+                message: `Add ${field} successfully!`,
+            };
+        } catch (err) {
+            return {
+                errType: 'update',
+                message: `Can't add ${field}!`,
+                errInfo: err.message,
+            };
+        }
     },
 
     async deleteData(modelName, deleteOptions) {
@@ -153,11 +176,11 @@ const crudService = {
         }).catch((err) => err);
     },
 
-    async restoreData(modalName, options) {
+    async restoreData(modelName, options) {
         return new Promise(async (resolve, reject) => {
             try {
                 sequelize.transaction(async (trans) => {
-                    await db[modalName].restore({
+                    await db[modelName].restore({
                         ...options,
                         transaction: trans,
                     });
@@ -165,7 +188,7 @@ const crudService = {
 
                 resolve({
                     errType: null,
-                    message: `restore ${modalName.toLowerCase()} successfully!`,
+                    message: `restore ${modelName.toLowerCase()} successfully!`,
                 });
             } catch (err) {
                 reject({
@@ -202,8 +225,8 @@ export const checkUserExist = async ({ email, userId, paranoid = true }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await db.User.findAll({
-                attributes: ['userId'],
-                where: { [email ? 'email' : 'userId']: email || userId },
+                attributes: ['id'],
+                where: { [email ? 'email' : 'id']: email || userId },
                 paranoid,
             });
 

@@ -11,16 +11,31 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            const allowNullOption = { foreignKey: { allowNull: false } };
+
+            User.hasMany(models.Receipt, allowNullOption);
+            User.hasMany(models.Product, allowNullOption);
+            User.belongsToMany(models.Product, { through: models.Cart });
+            User.belongsToMany(models.Product, { through: models.Review });
+            User.belongsToMany(models.Notification, {
+                through: 'Receive',
+                // as: 'Notification',
+            });
+            User.belongsToMany(User, {
+                as: 'Follower',
+                through: 'Follow',
+                foreignKey: 'FollowerId',
+            });
+            User.belongsToMany(User, {
+                as: 'Following',
+                through: 'Follow',
+                foreignKey: 'FollowingId',
+            });
         }
     }
 
     User.init(
         {
-            userId: {
-                primaryKey: true,
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-            },
             email: DataTypes.STRING,
             password: DataTypes.STRING,
             firstName: DataTypes.STRING,
@@ -29,7 +44,6 @@ module.exports = (sequelize, DataTypes) => {
             phoneNumber: DataTypes.STRING,
             avatar: DataTypes.STRING,
             address: DataTypes.STRING,
-            recentlySearch: DataTypes.ARRAY(DataTypes.STRING),
             roleId: DataTypes.STRING,
             shopType: DataTypes.STRING,
         },

@@ -16,11 +16,6 @@ module.exports = (sequelize, DataTypes) => {
 
     Banner.init(
         {
-            bannerId: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: DataTypes.INTEGER,
-            },
             bannerType: DataTypes.STRING,
             promoType: DataTypes.STRING,
             image: DataTypes.STRING,

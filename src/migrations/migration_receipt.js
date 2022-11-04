@@ -3,13 +3,13 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('receipts', {
-            orderId: {
+            id: {
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
                 type: Sequelize.INTEGER,
             },
-            userId: {
+            UserId: {
                 type: Sequelize.INTEGER,
             },
             status: {

@@ -16,8 +16,6 @@ module.exports = (sequelize, DataTypes) => {
 
     Join.init(
         {
-            flashsaleId: DataTypes.INTEGER,
-            productId: DataTypes.INTEGER,
             maxQuantity: DataTypes.INTEGER,
             discount: DataTypes.STRING,
             sold: DataTypes.INTEGER,
