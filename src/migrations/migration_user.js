@@ -22,7 +22,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             gender: {
-                type: Sequelize.BOOLEAN,
+                type: Sequelize.STRING,
             },
             phoneNumber: {
                 type: Sequelize.STRING,

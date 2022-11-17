@@ -1,23 +1,25 @@
 const express = require('express');
 const apiRoute = express.Router();
 
-const apiController = require('../app/controllers/apiController');
+import appController from '../app/controllers/appController';
+import userController from '../app/controllers/userController';
+import productController from '../app/controllers/productController';
 
 //USER
-apiRoute.post('/user/login', apiController.handleUserLogin);
+apiRoute.post('/users/login', userController.handleUserLogin);
 
-apiRoute.post('/user/signup', apiController.handleUserSignup);
+apiRoute.post('/users/signup', userController.handleUserSignup);
 
-apiRoute.get('/user/all', apiController.handleGetAllUser);
-apiRoute.get('/user/single', apiController.handleGetUser);
+apiRoute.put('/users/:id', userController.handleUpdateUser);
 
-apiRoute.put('/user/update', apiController.handleUpdateUser);
+apiRoute.delete('/users/:id', userController.handleDeleteUser);
 
-apiRoute.delete('/user/delete', apiController.handleDeleteUser);
+apiRoute.patch('/users/:id', userController.handlePatchUser);
 
-apiRoute.patch('/user/restore', apiController.handleRestoreUser);
-apiRoute.patch('/user/search', apiController.handleAddKeyword);
+apiRoute.get('/users/:id', userController.handleGetUser);
+apiRoute.get('/users', userController.handleGetAllUser);
 
-apiRoute.get('/:model', apiController.handleGetData);
+//APP
+apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
 
 module.exports = apiRoute;
