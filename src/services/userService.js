@@ -91,8 +91,6 @@ const userService = {
                     [isDeleted ? Op.ne : Op.eq]: null,
                 },
             },
-            raw: false,
-            include: db.Notification,
             paranoid: !isDeleted,
         };
 
@@ -104,14 +102,31 @@ const userService = {
         return response;
     },
 
-    async updateUser(updateData) {
+    async updateUser(userId, updateData) {
         const validateMessage = await checkValidityData(updateData);
 
         if (validateMessage.errType) {
             return validateMessage;
         }
 
-        return await crudService.updateRecord(modelName, updateData, options);
+        if (!userId)
+            return {
+                errType: 'parameter',
+                message: 'Missing required parameter!',
+            };
+
+        const options = { where: { id: userId } };
+        const newData = {
+            firstName: updateData.firstName,
+            lastName: updateData.lastName,
+            gender: updateData.gender,
+            phoneNumber: updateData.phoneNumber,
+            avatar: updateData.avatar,
+            address: updateData.address,
+            roleId: updateData.roleId,
+        };
+
+        return await crudService.updateRecord(modelName, newData, options);
     },
 
     async deleteUser(userId, isPermanently) {
@@ -152,12 +167,9 @@ const userService = {
             };
         }
 
-        const options = { where: { id: userId } };
-        const updateData = {
-            deletedAt: null,
-        };
+        const options = { where: { id: userId }, limit: 1 };
 
-        return await crudService.restoreRecord(modelName, updateData, options);
+        return await crudService.restoreRecord(modelName, options);
     },
 };
 

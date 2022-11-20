@@ -64,12 +64,12 @@ const crudService = {
         return new Promise(async (resolve, reject) => {
             try {
                 const data = await sequelize.transaction(async (transaction) => {
-                    const data = this.getAllData(modelName, {
+                    const users = await this.getAllData(modelName, {
                         attributes: ['id'],
                         where: options.where,
                     });
 
-                    if (!data.length)
+                    if (!users.payload.length)
                         resolve({
                             errType: 'update',
                             message: 'Record dose not exist!',
@@ -133,7 +133,7 @@ const crudService = {
     async deleteRecord(modelName, deleteOptions) {
         return new Promise(async (resolve, reject) => {
             try {
-                sequelize.transaction(async (transaction) => {
+                await sequelize.transaction(async (transaction) => {
                     await db[capitalizeFirstLetter(modelName)].destroy({
                         ...deleteOptions,
                         transaction,
@@ -156,7 +156,7 @@ const crudService = {
     async restoreRecord(modelName, options) {
         return new Promise(async (resolve, reject) => {
             try {
-                sequelize.transaction(async (transaction) => {
+                await sequelize.transaction(async (transaction) => {
                     await db[capitalizeFirstLetter(modelName)].restore({
                         ...options,
                         transaction,
