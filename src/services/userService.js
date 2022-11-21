@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { NOW, Op } from 'sequelize';
 
-import db from '../models';
 import crudService from './CRUDService';
 
 const modelName = 'User';
@@ -9,7 +8,9 @@ const modelName = 'User';
 const userService = {
     async handleUserLogin({ email = '', password = '' }) {
         const queryOption = {
-            attributes: ['email', 'password', 'firstName', 'lastName', 'avatar', 'roleId'],
+            attributes: {
+                exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
+            },
             where: { email },
         };
 
@@ -68,7 +69,7 @@ const userService = {
                     [isDeleted ? Op.ne : Op.eq]: null,
                 },
             },
-            limit: Number(limit) || 30,
+            limit,
             paranoid: !isDeleted,
         };
 
@@ -115,7 +116,12 @@ const userService = {
                 message: 'Missing required parameter!',
             };
 
-        const options = { where: { id: userId } };
+        const options = {
+            where: { id: userId },
+            returning: true,
+            plain: true,
+            limit: 1,
+        };
         const newData = {
             firstName: updateData.firstName,
             lastName: updateData.lastName,
@@ -126,7 +132,18 @@ const userService = {
             roleId: updateData.roleId,
         };
 
-        return await crudService.updateRecord(modelName, newData, options);
+        const res = await crudService.updateRecord(modelName, newData, options);
+
+        res.userInfo = res.payload;
+        delete res.payload;
+
+        if (res.userInfo) {
+            ['password', 'deletedAt', 'createdAt', 'updatedAt'].forEach(
+                (e) => delete res.userInfo[e]
+            );
+        }
+
+        return res;
     },
 
     async deleteUser(userId, isPermanently) {

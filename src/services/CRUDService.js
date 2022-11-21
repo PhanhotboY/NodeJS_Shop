@@ -84,7 +84,7 @@ const crudService = {
                 resolve({
                     errType: null,
                     message: `Update ${modelName.toLowerCase()} successfully!`,
-                    payload: data,
+                    payload: data[1],
                 });
             } catch (err) {
                 reject({
