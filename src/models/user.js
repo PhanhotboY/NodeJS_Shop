@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             User.belongsToMany(models.Product, { through: models.Review });
             User.belongsToMany(models.Notification, {
                 through: 'Receive',
-                // as: 'Notification',
+                as: 'Notification',
             });
             User.belongsToMany(User, {
                 as: 'Follower',

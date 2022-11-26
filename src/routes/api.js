@@ -5,6 +5,10 @@ import appController from '../app/controllers/appController';
 import userController from '../app/controllers/userController';
 import productController from '../app/controllers/productController';
 
+//APP
+apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
+apiRoute.get('/users/:id/notifications', appController.handleGetAllNotifications);
+
 //USER
 apiRoute.post('/users/login', userController.handleUserLogin);
 
@@ -18,8 +22,5 @@ apiRoute.patch('/users/:id', userController.handlePatchUser);
 
 apiRoute.get('/users/:id', userController.handleGetUser);
 apiRoute.get('/users', userController.handleGetAllUser);
-
-//APP
-apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
 
 module.exports = apiRoute;

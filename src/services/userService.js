@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { NOW, Op } from 'sequelize';
+import { Op } from 'sequelize';
 
 import crudService from './CRUDService';
 
