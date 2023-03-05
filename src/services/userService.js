@@ -9,7 +9,7 @@ const userService = {
     async handleUserLogin({ email = '', password = '' }) {
         const queryOption = {
             attributes: {
-                exclude: ['password', 'createdAt', 'updatedAt', 'deletedAt'],
+                exclude: ['createdAt', 'updatedAt', 'deletedAt'],
             },
             where: { email },
         };
