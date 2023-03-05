@@ -3,7 +3,10 @@ const apiRoute = express.Router();
 
 import appController from '../app/controllers/appController';
 import userController from '../app/controllers/userController';
-import productController from '../app/controllers/productController';
+import apiController from '../app/controllers/apiController';
+
+//All
+apiRoute.get('/all', apiController.all);
 
 //APP
 apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);

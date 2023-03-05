@@ -86,6 +86,12 @@ const userController = {
                 data = await userService.restoreUser(userId);
 
                 return res.status(200).json(data);
+
+            default:
+                res.status(200).json({
+                    errType: null,
+                    message: 'No actions resolved!',
+                });
         }
     },
 };

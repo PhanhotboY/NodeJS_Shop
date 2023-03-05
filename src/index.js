@@ -15,14 +15,14 @@ import helpers from './util/hbsHelpers';
 
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 app.use(morgan('combined'));
 
 app.use(cors({ credentials: true, origin: true }));
 
 //config static file
-app.use(express.static(path.join(path.resolve(), 'src', 'public')));
+app.use(express.static(__dirname + '/public'));
 
 // parse body
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -47,5 +47,5 @@ db.connect();
 route(app);
 
 app.listen(port, () => {
-    console.log(`hello world from port ${port}`);
+    console.log(`hello world from port ${port} in ${process.env.NODE_ENV} environment`);
 });

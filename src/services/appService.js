@@ -27,8 +27,9 @@ const appService = {
 
         if (!isUserExist) {
             return {
-                errType: 'parameter',
+                errType: null,
                 message: 'User is not exist!',
+                payload: [],
             };
         }
 
