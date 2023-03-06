@@ -1,29 +1,32 @@
 const express = require('express');
+
+const userRoute = require('../user/user.route');
+
 const apiRoute = express.Router();
 
-import appController from '../app/controllers/appController';
-import userController from '../app/controllers/userController';
-import apiController from '../app/controllers/apiController';
-
 //All
-apiRoute.get('/all', apiController.all);
+apiRoute.get('/all', (req, res) => {
+    return res.status(200).json({ message: 'Server is being Error!' });
+});
 
-//APP
-apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
-apiRoute.get('/users/:id/notifications', appController.handleGetAllNotifications);
+apiRoute.use('/users', userRoute);
 
-//USER
-apiRoute.post('/users/login', userController.handleUserLogin);
+// //APP
+// apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
+// apiRoute.get('/users/:id/notifications', appController.handleGetAllNotifications);
 
-apiRoute.post('/users/signup', userController.handleUserSignup);
+// //USER
+// apiRoute.post('/users/login', userController.handleUserLogin);
 
-apiRoute.put('/users/:id', userController.handleUpdateUser);
+// apiRoute.post('/users/signup', userController.handleUserSignup);
 
-apiRoute.delete('/users/:id', userController.handleDeleteUser);
+// apiRoute.put('/users/:id', userController.handleUpdateUser);
 
-apiRoute.patch('/users/:id', userController.handlePatchUser);
+// apiRoute.delete('/users/:id', userController.handleDeleteUser);
 
-apiRoute.get('/users/:id', userController.handleGetUser);
-apiRoute.get('/users', userController.handleGetAllUser);
+// apiRoute.patch('/users/:id', userController.handlePatchUser);
+
+// apiRoute.get('/users/:id', userController.handleGetUser);
+// apiRoute.get('/users', userController.handleGetAllUser);
 
 module.exports = apiRoute;
