@@ -6,59 +6,6 @@ import queryHelper from '../helpers/query.helper.js';
 const modelName = 'User';
 
 const userService = {
-    async handleUserLogin({ email = '', password = '' }) {
-        const queryOption = {
-            attributes: {
-                exclude: ['createdAt', 'updatedAt', 'deletedAt'],
-            },
-            where: { email },
-        };
-
-        const queryData = await queryHelper.getSingleData(modelName, queryOption);
-
-        if (!queryData.payload) {
-            return {
-                errType: 'email',
-                message: 'User not exist. Please try again!',
-            };
-        }
-
-        if (await compareUserPassword(password, queryData.payload.password)) {
-            delete queryData.payload.password;
-
-            return {
-                errType: null,
-                message: 'Valid password. Welcome!',
-                userInfo: queryData.payload,
-            };
-        }
-        return {
-            errType: 'password',
-            message: 'wrong password. Please try again!',
-        };
-    },
-
-    async handleUserSignup(data) {
-        const validateMessage = await checkValidityData(data);
-
-        if (validateMessage.errType) {
-            return validateMessage;
-        }
-
-        if (await checkUserExist({ email: data.email })) {
-            return {
-                errType: 'email',
-                message: 'Email already exist. Please try another email!',
-            };
-        }
-
-        const hashedPassword = await hashUserPassword(data.password);
-
-        data = { ...data, password: hashedPassword };
-
-        return await queryHelper.createNewRecord(modelName, data);
-    },
-
     async getAllUser(limit, isDeleted) {
         const queryOption = {
             attributes: {
@@ -198,7 +145,7 @@ const regexCheckURL =
     /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
 const regexCheckPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-const hashUserPassword = async (password) => {
+export const hashUserPassword = async (password) => {
     return new Promise(async (resolve, reject) => {
         try {
             const hashedPassword = await bcrypt.hashSync(password, salt);
@@ -210,7 +157,7 @@ const hashUserPassword = async (password) => {
     }).catch((err) => err);
 };
 
-const compareUserPassword = async (inputPassword, userPassword) => {
+export const compareUserPassword = async (inputPassword, userPassword) => {
     return new Promise(async (resolve, reject) => {
         try {
             const isSamePassword = await bcrypt.compareSync(inputPassword, userPassword);

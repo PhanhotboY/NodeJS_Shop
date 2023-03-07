@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import 'dotenv/config';
 
 import route from './api/v1/routers';
+import './api/v1/helpers/cache.helper';
 import db from './config/db/connect.config';
 
 const app = express();

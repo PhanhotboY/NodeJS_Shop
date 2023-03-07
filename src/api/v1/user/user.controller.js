@@ -1,16 +1,17 @@
 import userService from './user.service';
+import userHandler from './user.handler';
 
 const userController = {
     async handleUserLogin(req, res, next) {
         const { email, password } = req.body;
 
-        const loginRespondMessage = await userService.handleUserLogin({ email, password });
+        const loginRespondMessage = await userHandler.handleUserLogin({ email, password });
 
         return res.status(200).json(loginRespondMessage);
     },
 
     async handleUserSignup(req, res, next) {
-        const signupRespondMessage = await userService.handleUserSignup(req.body);
+        const signupRespondMessage = await userHandler.handleUserSignup(req.body);
 
         return res.status(200).json(signupRespondMessage);
     },
