@@ -29,7 +29,7 @@ const queryHelper = {
                 resolve({
                     errType: null,
                     message: 'All OK!',
-                    payload: data,
+                    payload: data || null,
                 });
             } catch (err) {
                 reject({
