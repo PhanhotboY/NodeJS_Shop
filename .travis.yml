@@ -1,0 +1,18 @@
+language: 'node_js'
+node_js:
+    - '18'
+dist: trusty
+service:
+    - redis-server
+    - postgresql
+env:
+    - NODE_ENV=ci
+cache:
+    directories:
+        - node_modules
+install:
+    - npm install
+script:
+    - nohup npm start &
+    - sleep 3
+    - npm run test

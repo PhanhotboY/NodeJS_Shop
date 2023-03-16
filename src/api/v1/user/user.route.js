@@ -1,5 +1,7 @@
 const express = require('express');
 
+import cleanCache from '../middlewares/cleanCache.js';
+
 const userRoute = express.Router();
 
 import userController from './user.controller';

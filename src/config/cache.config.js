@@ -1,11 +1,11 @@
 import { createClient } from 'redis';
 
+import keys from './keys.config';
+
 const client = createClient({
-    url: 'redis://phanhotboy:phan1495575753@localhost:6379',
+    url: keys.redisURI,
 });
 
 client.on('error', (err) => console.log('Redis Client Error', err));
-
-client.connect();
 
 export default client;

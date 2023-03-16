@@ -1,5 +1,6 @@
 import queryHelper from '../helpers/query.helper';
-import { checkValidityData, checkUserExist, hashUserPassword } from './user.service';
+import { checkDataValidity, isUserExist, isSamePassword } from './user.validation';
+import { hashUserPassword } from './user.service';
 
 const modelName = 'User';
 
@@ -21,7 +22,7 @@ const userHandler = {
             };
         }
 
-        if (await compareUserPassword(password, queryData.payload.password)) {
+        if (await isSamePassword(password, queryData.payload.password)) {
             delete queryData.payload.password;
 
             return {
@@ -37,13 +38,13 @@ const userHandler = {
     },
 
     async handleUserSignup(data) {
-        const validateMessage = await checkValidityData(data);
+        const validateMessage = await checkDataValidity(data);
 
         if (validateMessage.errType) {
             return validateMessage;
         }
 
-        if (await checkUserExist({ email: data.email })) {
+        if (await isUserExist({ email: data.email })) {
             return {
                 errType: 'email',
                 message: 'Email already exist. Please try another email!',

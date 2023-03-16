@@ -6,13 +6,17 @@ import bodyParser from 'body-parser';
 //map .env into environment variables (async => import before other file that use env var)
 import 'dotenv/config';
 
+import keys from './config/keys.config';
+import client from './config/cache.config';
 import route from './api/v1/routers';
-import './api/v1/helpers/cache.helper';
 import db from './config/db/connect.config';
+
+client.connect();
+import './api/v1/helpers/cache.helper';
 
 const app = express();
 
-const port = process.env.PORT || 8080;
+const port = keys.port;
 
 app.use(morgan('combined'));
 

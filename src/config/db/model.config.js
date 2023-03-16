@@ -4,8 +4,7 @@ const util = require('util');
 const path = require('path');
 const dir = require('node-dir');
 const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require('./env.config')[env];
+const config = require('../keys.config').database;
 
 dir.files = util.promisify(dir.files);
 

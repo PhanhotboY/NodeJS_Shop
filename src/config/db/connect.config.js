@@ -1,8 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const envConfigs = require('./env.config');
-const env = process.env.NODE_ENV || 'development';
-const config = envConfigs[env];
+const config = require('../keys.config').database;
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
@@ -14,6 +12,8 @@ const connect = async () => {
         console.error('oh nooo-----------------------');
         console.error('>>>> Unable to connect to the database:', error);
     }
+
+    return;
 };
 
 const close = async () => {
@@ -25,6 +25,6 @@ const close = async () => {
     }
 };
 
-module.exports.sequelize = sequelize;
-module.exports.connect = connect;
-module.exports.close = close;
+const db = { sequelize, connect, close };
+
+module.exports = db;
