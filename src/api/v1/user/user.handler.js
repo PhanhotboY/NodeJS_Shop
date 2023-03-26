@@ -1,5 +1,5 @@
 import queryHelper from '../helpers/query.helper';
-import { checkDataValidity, isUserExist, isSamePassword } from './user.validation';
+const { checkDataValidity, isUserExist, isSamePassword } = require('./user.validation');
 import { hashUserPassword } from './user.service';
 
 const modelName = 'User';

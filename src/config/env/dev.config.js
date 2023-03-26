@@ -7,6 +7,8 @@ module.exports = {
     host: 'http://localhost',
     port: 8080,
     redisURI: 'redis://default@localhost:6379',
+    accessKeyId: env.AWS_ACCESS_KEY1,
+    secretAccessKey: env.AWS_SECRET_KEY1,
     database: {
         database: env.DB_DATABASE_NAME,
         username: env.DB_USERNAME,

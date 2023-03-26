@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             const allowNullOption = { foreignKey: { allowNull: false } };
 
-            User.hasMany(models.Receipt, allowNullOption);
+            // User.hasMany(models.Receipt, allowNullOption);
             User.hasMany(models.Product, allowNullOption);
-            User.belongsToMany(models.Product, { through: models.Cart });
-            User.belongsToMany(models.Product, { through: models.Review });
+            // User.belongsToMany(models.Product, { through: models.Cart });
+            // User.belongsToMany(models.Product, { through: models.Review });
             User.belongsToMany(models.Notification, {
                 through: 'Receive',
                 as: 'Notification',

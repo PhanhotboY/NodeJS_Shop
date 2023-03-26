@@ -1,13 +1,10 @@
 const express = require('express');
+const path = require('path');
 
 const userRoute = require('../user/user.route');
+const uploadMiddleware = require('../middlewares/upload');
 
 const apiRoute = express.Router();
-
-//All
-apiRoute.get('/all', (req, res) => {
-    return res.status(200).json({ message: 'Server is being Error!' });
-});
 
 apiRoute.use('/users', userRoute);
 
@@ -15,18 +12,15 @@ apiRoute.use('/users', userRoute);
 // apiRoute.get('/allcodes/:type', appController.handleGetAllcodes);
 // apiRoute.get('/users/:id/notifications', appController.handleGetAllNotifications);
 
-// //USER
-// apiRoute.post('/users/login', userController.handleUserLogin);
+//All
+apiRoute.get('/all', (req, res) => {
+    return res.status(200).json({ message: 'Server is being Error!' });
+});
 
-// apiRoute.post('/users/signup', userController.handleUserSignup);
+apiRoute.post('/upload', uploadMiddleware);
 
-// apiRoute.put('/users/:id', userController.handleUpdateUser);
-
-// apiRoute.delete('/users/:id', userController.handleDeleteUser);
-
-// apiRoute.patch('/users/:id', userController.handlePatchUser);
-
-// apiRoute.get('/users/:id', userController.handleGetUser);
-// apiRoute.get('/users', userController.handleGetAllUser);
+apiRoute.get('/', (req, res) => {
+    return res.status(301).redirect(path.join(req.baseUrl, 'all'));
+});
 
 module.exports = apiRoute;

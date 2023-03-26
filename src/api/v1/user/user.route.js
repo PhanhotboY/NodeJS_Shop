@@ -10,7 +10,7 @@ userRoute.post('/login', userController.handleUserLogin);
 
 userRoute.post('/signup', userController.handleUserSignup);
 
-userRoute.put('/:id', userController.handleUpdateUser);
+userRoute.put('/:id', cleanCache, userController.handleUpdateUser);
 
 userRoute.delete('/:id', userController.handleDeleteUser);
 

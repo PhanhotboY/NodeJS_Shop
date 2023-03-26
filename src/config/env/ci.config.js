@@ -7,6 +7,8 @@ module.exports = {
     host: env.HOST,
     port: env.PORT,
     redisURI: env.REDIS_URI,
+    awsAccessKey: env.AWS_ACCESS_KEY,
+    awsSecretKey: env.AWS_SECRET_KEY,
     database: {
         database: env.DB_DATABASE_NAME,
         username: env.DB_USERNAME,

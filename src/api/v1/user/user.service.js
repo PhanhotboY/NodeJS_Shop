@@ -9,9 +9,7 @@ const exclude = ['password', 'createdAt', 'updatedAt', 'deletedAt'];
 const userService = {
     async getAllUser(limit, isDeleted) {
         const options = {
-            attributes: {
-                exclude,
-            },
+            attributes: { exclude },
             where: {
                 deletedAt: {
                     [isDeleted ? Op.ne : Op.eq]: null,
@@ -26,9 +24,7 @@ const userService = {
 
     async getSingleUser(userId, isDeleted) {
         const options = {
-            attributes: {
-                exclude,
-            },
+            attributes: { exclude },
             where: {
                 id: userId,
                 deletedAt: {
@@ -56,10 +52,9 @@ const userService = {
 
         const options = {
             where: { id: userId },
-            returning: true,
-            plain: true,
-            limit: 1,
+            exclude,
         };
+
         const newData = {
             firstName: updateData.firstName,
             lastName: updateData.lastName,
@@ -125,18 +120,16 @@ const userService = {
     },
 };
 
-const salt = bcrypt.genSaltSync(10);
-
 export const hashUserPassword = async (password) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const hashedPassword = await bcrypt.hashSync(password, salt);
+    const salt = bcrypt.genSaltSync(10);
 
-            resolve(hashedPassword);
-        } catch (err) {
-            reject(err.message);
-        }
-    }).catch((err) => err);
+    try {
+        const hashedPassword = await bcrypt.hashSync(password, salt);
+
+        return hashedPassword;
+    } catch (err) {
+        return err.message;
+    }
 };
 
 const query = async (action, options, data) => {
