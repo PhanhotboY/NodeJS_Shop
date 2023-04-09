@@ -1,14 +1,19 @@
 const env = process.env;
 
 module.exports = {
-    cookieKey: env.COOKIE_KEY,
-    googleClientID: env.GOOGLE_CLIENT_ID,
-    googleClientSecret: env.GOOGLE_CLIENT_SECRET,
-    host: env.HOST,
     port: env.PORT,
-    redisURI: env.REDIS_URI,
+    host: env.HOST,
+    redisHost: env.REDIS_HOST,
+    redisPort: env.REDIS_PORT,
+    redisUser: env.REDIS_USER,
+    redisPassword: env.REDIS_PASSWORD,
     awsAccessKey: env.AWS_ACCESS_KEY,
     awsSecretKey: env.AWS_SECRET_KEY,
+    googleClientID: env.GOOGLE_CLIENT_ID,
+    googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+    cookieKeys: [env.COOKIE_KEY1, env.COOKIE_KEY2],
+    stripePublishableKey: env.STRIPE_PUBLISHABLE_KEY,
+    stripeSecretKey: env.STRIPE_SECRET_KEY,
     database: {
         database: env.DB_DATABASE_NAME,
         username: env.DB_USERNAME,

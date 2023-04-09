@@ -4,11 +4,11 @@ const util = require('util');
 const path = require('path');
 const dir = require('node-dir');
 const Sequelize = require('sequelize');
-const { database } = require('../keys.config');
+const config = require('./sequelize.config')['development'];
 
 dir.files = util.promisify(dir.files);
 
-const sequelize = new Sequelize(database.database, database.username, database.password, database);
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 const db = {};
 const modelsDir = path.join(path.dirname(__dirname), '..', '/api/v1');
@@ -20,7 +20,9 @@ const modelsDir = path.join(path.dirname(__dirname), '..', '/api/v1');
         for (const dir of dirs) {
             try {
                 const modelDir = `${dir}/${path.basename(dir)}.model.js`;
-                const model = require(modelDir)(sequelize, Sequelize.DataTypes);
+
+                const model = await require(modelDir)(sequelize, Sequelize.DataTypes);
+
                 db[model.name] = model;
             } catch (err) {
                 continue;

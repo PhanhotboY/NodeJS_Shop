@@ -7,8 +7,8 @@ const s3 = new AWS.S3({
     // apiVersion: '2012-10-17',
     // signatureVersion: 'v4',
     credentials: {
-        accessKeyId: keys.accessKeyId,
-        secretAccessKey: keys.secretAccessKey,
+        awsAccessKey: keys.awsAccessKey,
+        awsSecretKey: keys.awsSecretKey,
     },
     region: 'ap-southeast-1',
 });

@@ -1,4 +1,4 @@
-import client from '../../../config/cache.config';
+const client = require.main.require('./config/cache.config');
 
 const cleanCache = async (req, res, next) => {
     // await next();
@@ -12,4 +12,4 @@ const cleanCache = async (req, res, next) => {
     next();
 };
 
-export default cleanCache;
+module.exports = cleanCache;

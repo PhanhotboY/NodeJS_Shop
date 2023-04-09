@@ -1,14 +1,14 @@
-import db from '../../../config/db/model.config';
+const db = require.main.require('./config/db/model.config');
 
 const queryHelper = {
     async createNewRecord(modelName, data) {
         try {
-            await db[capitalizeFirstLetter(modelName)].create(data);
+            const result = await db[capitalizeFirstLetter(modelName)].create(data);
 
             return {
                 errType: null,
                 message: `Create ${modelName.toLowerCase()} successfully!`,
-                payload: null,
+                payload: result.dataValues,
             };
         } catch (err) {
             return {
@@ -20,7 +20,7 @@ const queryHelper = {
 
     async getAllData(modelName, options) {
         try {
-            const data = await db[capitalizeFirstLetter(modelName)].cache().findAll(options);
+            const data = await db[capitalizeFirstLetter(modelName)].findAll(options);
 
             return {
                 errType: null,
@@ -137,8 +137,8 @@ const queryHelper = {
     },
 };
 
-export const capitalizeFirstLetter = (string) => {
+const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export default queryHelper;
+module.exports = queryHelper;

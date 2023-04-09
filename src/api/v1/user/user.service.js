@@ -1,10 +1,11 @@
-import bcrypt from 'bcryptjs';
-import { Op } from 'sequelize';
+const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 
-import queryHelper from '../helpers/query.helper.js';
-import { checkDataValidity, isUserExist } from './user.validation.js';
+const queryHelper = require('../helpers/query.helper.js');
+const { listCustomerPayMethods } = require('../helpers/payment.helper');
+const { checkDataValidity, isUserExist } = require('./user.validation.js');
 
-const exclude = ['password', 'createdAt', 'updatedAt', 'deletedAt'];
+const exclude = ['password', 'stripeId', 'createdAt', 'updatedAt', 'deletedAt'];
 
 const userService = {
     async getAllUser(limit, isDeleted) {
@@ -24,7 +25,7 @@ const userService = {
 
     async getSingleUser(userId, isDeleted) {
         const options = {
-            attributes: { exclude },
+            attributes: { exclude, include: ['stripeId'] },
             where: {
                 id: userId,
                 deletedAt: {
@@ -118,6 +119,21 @@ const userService = {
 
         return await query('restoreRecord', options);
     },
+
+    async getAllUserInfo(userId) {
+        const options = {
+            where: {
+                id: userId,
+            },
+        };
+
+        const res = await queryHelper.getSingleData('Users', options);
+
+        res.userInfo = res.payload;
+        delete res.payload;
+
+        return res;
+    },
 };
 
 export const hashUserPassword = async (password) => {
@@ -133,12 +149,26 @@ export const hashUserPassword = async (password) => {
 };
 
 const query = async (action, options, data) => {
-    const res = await queryHelper[action]('User', options, data);
+    const res = await queryHelper[action]('Users', options, data);
 
     res.userInfo = res.payload;
     delete res.payload;
 
+    if (res.userInfo?.stripeId) {
+        try {
+            const paymentMethods = await listCustomerPayMethods(res.userInfo.stripeId);
+            res.userInfo.isAttachedPaymentMethod = !!paymentMethods.length;
+
+            delete res.userInfo.stripeId;
+        } catch (err) {
+            return {
+                errType: 'stripe',
+                message: err.message,
+            };
+        }
+    }
+
     return res;
 };
 
-export default userService;
+module.exports = userService;

@@ -1,11 +1,21 @@
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
-import keys from './keys.config';
+const keys = require('./keys.config');
 
 const client = createClient({
-    url: keys.redisURI,
+    socket: {
+        host: keys.redisHost,
+        port: keys.redisPort,
+    },
+    username: keys.redisUser,
+    password: keys.redisPassword,
 });
 
-client.on('error', (err) => console.log('Redis Client Error', err));
+client.on('connect', () => console.log('>>>>> Redis connection established successfully!'));
 
-export default client;
+client.on('error', (err) => {
+    console.error('oh nooo-----------------------');
+    console.error('>>>> Unable to connect to the Redis server:', err);
+});
+
+module.exports = client;

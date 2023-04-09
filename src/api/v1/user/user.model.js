@@ -3,7 +3,7 @@
 import { Model } from 'sequelize';
 
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {
+    class Users extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -14,19 +14,19 @@ module.exports = (sequelize, DataTypes) => {
             const allowNullOption = { foreignKey: { allowNull: false } };
 
             // User.hasMany(models.Receipt, allowNullOption);
-            User.hasMany(models.Product, allowNullOption);
+            Users.hasMany(models.Product, allowNullOption);
             // User.belongsToMany(models.Product, { through: models.Cart });
             // User.belongsToMany(models.Product, { through: models.Review });
-            User.belongsToMany(models.Notification, {
+            Users.belongsToMany(models.Notification, {
                 through: 'Receive',
                 as: 'Notification',
             });
-            User.belongsToMany(User, {
+            Users.belongsToMany(Users, {
                 as: 'Follower',
                 through: 'Follow',
                 foreignKey: 'FollowerId',
             });
-            User.belongsToMany(User, {
+            Users.belongsToMany(Users, {
                 as: 'Following',
                 through: 'Follow',
                 foreignKey: 'FollowingId',
@@ -34,8 +34,17 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    User.init(
+    Users.init(
         {
+            id: {
+                primaryKey: true,
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            stripeId: {
+                allowNull: false,
+                type: DataTypes.STRING,
+            },
             email: DataTypes.STRING,
             password: DataTypes.STRING,
             firstName: DataTypes.STRING,
@@ -49,11 +58,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: 'User',
+            modelName: 'Users',
             tableName: 'Users',
             timestamps: true,
             paranoid: true,
         }
     );
-    return User;
+    return Users;
 };

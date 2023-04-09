@@ -1,21 +1,24 @@
 const env = process.env;
 
 module.exports = {
-    cookieKey: '',
-    googleClientID: '',
-    googleClientSecret: '',
-    host: 'http://localhost',
-    port: 8080,
+    port: 6868,
+    host: 'https://localhost',
+    clientHost: 'http://localhost:3000',
     redisURI: 'redis://default@localhost:6379',
-    accessKeyId: env.AWS_ACCESS_KEY1,
-    secretAccessKey: env.AWS_SECRET_KEY1,
+    awsAccessKey: env.AWS_ACCESS_KEY,
+    awsSecretKey: env.AWS_SECRET_KEY,
+    googleClientID: env.GOOGLE_CLIENT_ID,
+    googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+    cookieKeys: [env.COOKIE_KEY1, env.COOKIE_KEY2],
+    stripePublishableKey: env.STRIPE_PUBLISHABLE_KEY,
+    stripeSecretKey: env.STRIPE_SECRET_KEY,
     database: {
-        database: env.DB_DATABASE_NAME,
-        username: env.DB_USERNAME,
-        password: env.DB_PASSWORD,
-        host: env.DB_HOST,
-        port: env.DB_PORT,
+        port: '5432',
+        host: 'localhost',
+        database: 'shopee',
         dialect: 'postgres',
+        username: 'postgres',
+        password: 'phan0344800574',
         dialectOptions:
             env.DB_SSL === 'true'
                 ? {

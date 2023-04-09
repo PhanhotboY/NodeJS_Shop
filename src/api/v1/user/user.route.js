@@ -1,6 +1,7 @@
 const express = require('express');
 
-import cleanCache from '../middlewares/cleanCache.js';
+const cleanCache = require('../middlewares/cleanCache');
+const { requireLoggedIn } = require('../middlewares/auth');
 
 const userRoute = express.Router();
 
@@ -8,15 +9,16 @@ import userController from './user.controller';
 
 userRoute.post('/login', userController.handleUserLogin);
 
-userRoute.post('/signup', userController.handleUserSignup);
+userRoute.post('/signup', cleanCache, userController.handleUserSignup);
 
-userRoute.put('/:id', cleanCache, userController.handleUpdateUser);
+userRoute.put('/:id', requireLoggedIn, cleanCache, userController.handleUpdateUser);
 
-userRoute.delete('/:id', userController.handleDeleteUser);
+userRoute.delete('/:id', requireLoggedIn, cleanCache, userController.handleDeleteUser);
 
-userRoute.patch('/:id', userController.handlePatchUser);
+userRoute.patch('/:id', requireLoggedIn, cleanCache, userController.handlePatchUser);
 
+userRoute.get('/current', requireLoggedIn, userController.handleGetUser);
 userRoute.get('/:id', userController.handleGetUser);
-userRoute.get('/', userController.handleGetAllUser);
+userRoute.get('/', requireLoggedIn, userController.handleGetAllUser);
 
 module.exports = userRoute;
