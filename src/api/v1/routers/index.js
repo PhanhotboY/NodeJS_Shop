@@ -1,11 +1,10 @@
 const apiRoute = require('./api');
+const siteRoute = require('./site');
 
 const routes = (app) => {
     app.use('/api', apiRoute);
 
-    app.use('/', (req, res) => {
-        res.send('Wait a minutes from Home page!');
-    });
+    app.use('/', siteRoute);
 };
 
 module.exports = routes;

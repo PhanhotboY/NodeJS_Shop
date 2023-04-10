@@ -1,13 +1,14 @@
 const { Sequelize } = require('sequelize');
 
-const config = require('../keys.config').database;
+const env = process.env.NODE_ENV;
+const config = require('./sequelize.config')[env];
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 const connect = async () => {
     try {
         await sequelize.authenticate();
-        console.log('>>>>> Connection has been established successfully.');
+        console.log('>>>>> Database connection has been established successfully.');
     } catch (error) {
         console.error('oh nooo-----------------------');
         console.error('>>>> Unable to connect to the database:', error);
