@@ -66,8 +66,8 @@ routes(app);
 https
     .createServer(
         {
-            key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
-            cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem')),
+            key: fs.readFileSync(path.join(__dirname, '..', 'key.pem')),
+            cert: fs.readFileSync(path.join(__dirname, '..', 'cert.pem')),
             passphrase: process.env.OPENSSL_PASSPHRASE,
         },
         app
