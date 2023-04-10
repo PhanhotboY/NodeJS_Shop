@@ -1,8 +1,17 @@
 const express = require('express');
 const siteRoute = express.Router();
 
-const siteController = require('../app/controllers/siteController');
+// const siteController = require('siteController');
 
-siteRoute.get('/', siteController.home);
+siteRoute.get('/', (req, res) => {
+    console.log('hello from site');
+
+    res.send(
+        `<div>
+            Thank you for visit my site! You can view all available APIs from 
+            <a href='/api/all'>here</a>.
+        </div>`
+    );
+});
 
 module.exports = siteRoute;

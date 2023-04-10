@@ -14,7 +14,10 @@
     "globalTeardown": "./test/teardown.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.1338.0",
     "body-parser": "^1.20.0",
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -22,10 +25,13 @@
     "express-handlebars": "^6.0.6",
     "helmet": "^6.0.1",
     "node-dir": "^0.1.17",
-    "passport": "^0.6.0",
+    "passport": "^0.5.3",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
-    "redis": "^4.6.5"
+    "redis": "^4.6.5",
+    "stripe": "^11.17.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",

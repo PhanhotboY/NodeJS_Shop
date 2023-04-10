@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-const client = require(`../../../config/cache.config`).default;
+const client = require(`../../../config/cache.config`);
 
 const actions = ['findAll', 'create', 'destroy', 'update'];
 

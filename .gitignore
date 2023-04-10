@@ -3,3 +3,8 @@
 src/public/css/
 
 /node_modules
+
+.env
+
+key.pem
+cert.pem

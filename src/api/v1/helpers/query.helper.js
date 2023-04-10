@@ -1,151 +1,144 @@
-const db = require(`../../../config/db/model.config`);
-const { sequelize } = db;
+const db = require.main.require('./config/db/model.config');
 
 const queryHelper = {
     async createNewRecord(modelName, data) {
-        return await handle(
-            'create',
-            async () => {
-                await sequelize.transaction(async (transaction) => {
-                    return await db[capitalizeFirstLetter(modelName)].create(data, { transaction });
-                });
-            },
-            modelName
-        );
+        try {
+            const result = await db[capitalizeFirstLetter(modelName)].create(data);
+
+            return {
+                errType: null,
+                message: `Create ${modelName.toLowerCase()} successfully!`,
+                payload: result.dataValues,
+            };
+        } catch (err) {
+            return {
+                errType: 'create',
+                message: err.message,
+            };
+        }
     },
 
     async getAllData(modelName, options) {
-        return await handle(
-            'get',
-            async () => {
-                const data = await db[capitalizeFirstLetter(modelName)].cache().findAll(options);
+        try {
+            const data = await db[capitalizeFirstLetter(modelName)].findAll(options);
 
-                return data || null;
-            },
-            modelName
-        );
+            return {
+                errType: null,
+                message: `Get ${modelName.toLowerCase()} successfully!`,
+                payload: data || null,
+            };
+        } catch (err) {
+            return {
+                errType: 'get',
+                message: err.message,
+            };
+        }
     },
 
     async getSingleData(modelName, options) {
-        return await handle(
-            'get',
-            async () => {
-                const data = await db[capitalizeFirstLetter(modelName)].cache().findOne(options);
+        try {
+            const data = await db[capitalizeFirstLetter(modelName)].cache().findOne(options);
 
-                return data || null;
-            },
-            modelName
-        );
+            return {
+                errType: null,
+                message: `Get ${modelName.toLowerCase()} successfully!`,
+                payload: data || null,
+            };
+        } catch (err) {
+            return {
+                errType: 'get',
+                message: err.message,
+            };
+        }
     },
 
     async updateRecord(modelName, options, updateData) {
-        return await handle(
-            'update',
-            async () => {
-                const data = await sequelize.transaction(async (transaction) => {
-                    const users = await this.getAllData(modelName, {
-                        attributes: ['id'],
-                        where: options.where,
-                    });
+        try {
+            const [rowsUpdated] = await db[capitalizeFirstLetter(modelName)].update(
+                updateData,
+                options
+            );
 
-                    if (!users.payload.length)
-                        throw new Error({
-                            message: 'Record dose not exist!',
-                        });
+            if (rowsUpdated === 0) {
+                throw new Error('Record does not exist!');
+            }
 
-                    return await db[capitalizeFirstLetter(modelName)].update(updateData, {
-                        ...options,
-                        transaction,
-                    });
-                });
+            const getResponse = await this.getSingleData(modelName, options);
 
-                return data[1];
-            },
-            modelName
-        );
+            return {
+                errType: null,
+                message: `Update ${modelName.toLowerCase()} successfully!`,
+                payload: getResponse.payload,
+            };
+        } catch (err) {
+            return {
+                errType: 'update',
+                message: err.message,
+            };
+        }
     },
 
     async updateRecordAttribute(modelName, options, field, value) {
-        return handle(
-            'update',
-            async () => {
-                const data = await sequelize.transaction(async (transaction) => {
-                    const data = this.getAllData(modelName, {
-                        attributes: ['id'],
-                        where: options.where,
-                    });
+        try {
+            const [rowsUpdated] = await db[capitalizeFirstLetter(modelName)].update(
+                { [field]: value },
+                { where: options.where }
+            );
 
-                    if (!data.length)
-                        throw new Error({
-                            message: 'Record dose not exist!',
-                        });
+            if (rowsUpdated === 0) {
+                throw new Error('Record does not exist!');
+            }
 
-                    return await db[capitalizeFirstLetter(modelName)].update(
-                        { [field]: value },
-                        { ...options, transaction }
-                    );
-                });
-
-                return data;
-            },
-            modelName
-        );
+            return {
+                errType: null,
+                message: `Update ${modelName.toLowerCase()} successfully!`,
+                payload: rowsUpdated,
+            };
+        } catch (err) {
+            return {
+                errType: 'update',
+                message: err.message,
+            };
+        }
     },
 
     async deleteRecord(modelName, deleteOptions) {
-        return await handle(
-            'restore',
-            async () => {
-                await sequelize.transaction(async (transaction) => {
-                    await db[capitalizeFirstLetter(modelName)].destroy({
-                        ...deleteOptions,
-                        transaction,
-                    });
-                });
-            },
-            modelName
-        );
+        try {
+            const rowsDeleted = await db[capitalizeFirstLetter(modelName)].destroy(deleteOptions);
+
+            return {
+                errType: null,
+                message: `Delete ${modelName.toLowerCase()} successfully!`,
+                payload: rowsDeleted,
+            };
+        } catch (err) {
+            return {
+                errType: 'delete',
+                message: err.message,
+            };
+        }
     },
 
     async restoreRecord(modelName, options) {
-        return await handle(
-            'restore',
-            async () => {
-                await sequelize.transaction(async (transaction) => {
-                    await db[capitalizeFirstLetter(modelName)].restore({
-                        ...options,
-                        transaction,
-                    });
-                });
-            },
-            modelName
-        );
+        try {
+            const rowsRestored = await db[capitalizeFirstLetter(modelName)].restore(options);
+
+            return {
+                errType: null,
+                message: `Restore ${modelName.toLowerCase()} successfully!`,
+                payload: rowsRestored,
+            };
+        } catch (err) {
+            return {
+                errType: 'restore',
+                message: err.message,
+            };
+        }
     },
 };
 
-export const capitalizeFirstLetter = (string) => {
+const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const handle = async (action, callback, modelName) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const payload = await callback();
-
-            resolve({
-                errType: null,
-                message: `${capitalizeFirstLetter(
-                    action
-                )} ${modelName.toLowerCase()} successfully!`,
-                payload,
-            });
-        } catch (err) {
-            reject({
-                errType: action,
-                message: err.message,
-            });
-        }
-    }).catch((err) => err);
-};
-
-export default queryHelper;
+module.exports = queryHelper;

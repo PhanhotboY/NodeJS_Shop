@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 
             Product.belongsTo(models.User, allowNullOption);
             Product.belongsTo(models.User, allowNullOption);
-            Product.belongsToMany(models.Receipt, { through: models.Order });
-            Product.belongsToMany(models.User, { through: models.Cart, ...allowNullOption });
-            Product.belongsToMany(models.User, { through: models.Review, ...allowNullOption });
-            Product.belongsToMany(models.Flashsale, { through: models.Join, ...allowNullOption });
+            // Product.belongsToMany(models.Receipt, { through: models.Order });
+            // Product.belongsToMany(models.User, { through: models.Cart, ...allowNullOption });
+            // Product.belongsToMany(models.User, { through: models.Review, ...allowNullOption });
+            // Product.belongsToMany(models.Flashsale, { through: models.Join, ...allowNullOption });
         }
     }
 
