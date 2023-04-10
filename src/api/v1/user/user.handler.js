@@ -1,11 +1,15 @@
-import queryHelper from '../helpers/query.helper';
-import { checkDataValidity, isUserExist, isSamePassword } from './user.validation';
-import { hashUserPassword } from './user.service';
+const { v4: uuidv4 } = require('uuid');
 
-const modelName = 'User';
+const { roles } = require('../helpers/constant');
+const queryHelper = require('../helpers/query.helper');
+const stripe = require.main.require('./config/stripe.config');
+const { hashUserPassword } = require('./user.service');
+const { checkDataValidity, isUserExist, isSamePassword } = require('./user.validation');
+
+const modelName = 'Users';
 
 const userHandler = {
-    async handleUserLogin({ email = '', password = '' }) {
+    async login({ email = '', password = '' }) {
         const queryOption = {
             attributes: {
                 exclude: ['createdAt', 'updatedAt', 'deletedAt'],
@@ -37,25 +41,52 @@ const userHandler = {
         };
     },
 
-    async handleUserSignup(data) {
-        const validateMessage = await checkDataValidity(data);
+    async signup(user) {
+        const validateMessage = await checkDataValidity(user);
 
         if (validateMessage.errType) {
             return validateMessage;
         }
 
-        if (await isUserExist({ email: data.email })) {
+        if (user.email && user.password) {
+            if (await isUserExist({ email: user.email })) {
+                return {
+                    errType: 'email',
+                    message: 'Email already exist. Please try another email!',
+                };
+            }
+
+            const hashedPassword = await hashUserPassword(user.password);
+
+            user = { id: uuidv4(), ...user, password: hashedPassword };
+        }
+
+        try {
+            const customer = await stripe.customers.create({
+                name: user.lastName + ' ' + user.firstName,
+                email: user.email,
+                address: user.address,
+            });
+
+            user.stripeId = customer.id;
+        } catch (err) {
             return {
-                errType: 'email',
-                message: 'Email already exist. Please try another email!',
+                errType: 'create',
+                message: err.message,
             };
         }
 
-        const hashedPassword = await hashUserPassword(data.password);
+        user = {
+            ...user,
+            roleId: user.roleId || roles.USER,
+        };
 
-        data = { ...data, password: hashedPassword };
+        const result = await queryHelper.createNewRecord(modelName, user);
 
-        return await queryHelper.createNewRecord(modelName, data);
+        result.userInfo = result.payload;
+        delete result.payload;
+
+        return result;
     },
 };
 

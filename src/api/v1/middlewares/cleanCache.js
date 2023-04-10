@@ -1,13 +1,15 @@
-import client from '../../../config/cache.config';
+const client = require.main.require('./config/cache.config');
 
 const cleanCache = async (req, res, next) => {
-    await next();
+    // await next();
 
     const key = JSON.stringify({
         collection: 'Users',
     });
 
-    client.del(key);
+    client.flushAll();
+
+    next();
 };
 
-export default cleanCache;
+module.exports = cleanCache;

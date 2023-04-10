@@ -1,38 +1,77 @@
+import fs from 'fs';
 import cors from 'cors';
+import path from 'path';
+import https from 'https';
 import morgan from 'morgan';
+import helmet from 'helmet';
 import express from 'express';
+import passport from 'passport';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
 
 //map .env into environment variables (async => import before other file that use env var)
 import 'dotenv/config';
 
-import keys from './config/keys.config';
-import client from './config/cache.config';
-import route from './api/v1/routers';
-import db from './config/db/connect.config';
-
-client.connect();
-import './api/v1/helpers/cache.helper';
-
 const app = express();
 
-const port = keys.port;
+import './config/passport.config';
+import './api/v1/helpers/cache.helper';
+import routes from './api/v1/routers';
+import keys from './config/keys.config';
+import client from './config/cache.config';
+import db from './config/db/connect.config';
+
+app.use(helmet());
+
+app.use(
+    cors({
+        credentials: true,
+        origin: 'http://localhost:3000',
+        allowedHeaders: ['X-PINGOTHER', 'Content-Type'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+    })
+);
+app.options('*', cors({ origin: true, credentials: true }));
 
 app.use(morgan('combined'));
-
-app.use(cors({ credentials: true, origin: true }));
 
 // parse body
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
+// app.use(cookieParser(keys.cookieKeys));
 app.use(bodyParser.json());
 
 //connect database
 db.connect();
 
-route(app);
+client.connect();
 
-app.listen(port, () => {
-    console.log(`hello world from port ${port} in ${process.env.NODE_ENV} environment`);
-});
+//config passport and session
+app.use(
+    cookieSession({
+        name: 'session',
+        keys: keys.cookieKeys,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'none',
+        secure: true,
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+routes(app);
+
+https
+    .createServer(
+        {
+            key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
+            cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem')),
+            passphrase: process.env.OPENSSL_PASSPHRASE,
+        },
+        app
+    )
+    .listen(keys.port, () => {
+        console.log(`hello world from port ${keys.port} in ${process.env.NODE_ENV} environment`);
+    });
