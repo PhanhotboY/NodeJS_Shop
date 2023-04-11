@@ -26,6 +26,6 @@ const close = async () => {
     }
 };
 
-const db = { sequelize, connect, close };
+const db = { sequelize, Sequelize, connect, close };
 
 module.exports = db;

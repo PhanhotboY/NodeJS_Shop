@@ -1,7 +1,7 @@
 const env = process.env;
 
 module.exports = {
-    port: env.PORT,
+    port: env.PORT || 8080,
     host: env.HOST,
     redisHost: env.REDIS_HOST,
     redisPort: env.REDIS_PORT,
