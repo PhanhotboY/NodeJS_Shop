@@ -8,6 +8,7 @@ const authRoute = express.Router();
 
 authRoute.get(
     '/google',
+    cleanCache,
     async (req, res, next) => {
         const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
 
@@ -28,7 +29,6 @@ authRoute.get(
     passport.authenticate('google', {
         failureRedirect: '/auth/fail',
     }),
-    cleanCache,
     (req, res) => {
         const clientRedirectURL = req.session.clientRedirectURL;
         delete req.session.clientRedirectURL;
