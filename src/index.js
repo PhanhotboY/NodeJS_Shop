@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import express from 'express';
 import passport from 'passport';
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 
 //map .env into environment variables (async => import before other file that use env var)
@@ -63,15 +62,23 @@ app.use(passport.session());
 
 routes(app);
 
-https
-    .createServer(
-        {
-            key: fs.readFileSync(path.join(__dirname, '..', 'key.pem')),
-            cert: fs.readFileSync(path.join(__dirname, '..', 'cert.pem')),
-            passphrase: process.env.OPENSSL_PASSPHRASE,
-        },
-        app
-    )
-    .listen(keys.port, () => {
+if (process.env.NODE_ENV === 'develop') {
+    https
+        .createServer(
+            {
+                key: fs.readFileSync(path.join(__dirname, '..', 'key.pem')),
+                cert: fs.readFileSync(path.join(__dirname, '..', 'cert.pem')),
+                passphrase: process.env.OPENSSL_PASSPHRASE,
+            },
+            app
+        )
+        .listen(keys.port, () => {
+            console.log(
+                `hello world from port ${keys.port} in ${process.env.NODE_ENV} environment`
+            );
+        });
+} else {
+    app.listen(keys.port, () => {
         console.log(`hello world from port ${keys.port} in ${process.env.NODE_ENV} environment`);
     });
+}
