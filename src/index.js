@@ -25,8 +25,8 @@ app.use(helmet());
 
 app.use(
     cors({
+        origin: true,
         credentials: true,
-        origin: 'http://localhost:3000',
         allowedHeaders: ['X-PINGOTHER', 'Content-Type'],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
     })
