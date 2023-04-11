@@ -20,7 +20,7 @@ const queryHelper = {
 
     async getAllData(modelName, options) {
         try {
-            const data = await db[capitalizeFirstLetter(modelName)].findAll(options);
+            const data = await db[capitalizeFirstLetter(modelName)].cache().findAll(options);
 
             return {
                 errType: null,
