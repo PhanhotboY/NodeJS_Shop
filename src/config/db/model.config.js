@@ -3,14 +3,10 @@
 const util = require('util');
 const path = require('path');
 const dir = require('node-dir');
-const Sequelize = require('sequelize');
-const config = require('./sequelize.config')['development'];
+const db = require('./connect.config');
 
 dir.files = util.promisify(dir.files);
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
-
-const db = {};
 const modelsDir = path.join(path.dirname(__dirname), '..', '/api/v1');
 
 (async function loadModels() {
@@ -21,7 +17,7 @@ const modelsDir = path.join(path.dirname(__dirname), '..', '/api/v1');
             try {
                 const modelDir = `${dir}/${path.basename(dir)}.model.js`;
 
-                const model = await require(modelDir)(sequelize, Sequelize.DataTypes);
+                const model = await require(modelDir)(db.sequelize, db.Sequelize.DataTypes);
 
                 db[model.name] = model;
             } catch (err) {
@@ -35,9 +31,7 @@ const modelsDir = path.join(path.dirname(__dirname), '..', '/api/v1');
             }
         }
 
-        await sequelize.sync();
-        db.sequelize = sequelize;
-        db.Sequelize = Sequelize;
+        await db.sequelize.sync();
     } catch (err) {
         console.error(err);
     }
