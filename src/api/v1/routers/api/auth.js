@@ -13,7 +13,7 @@ authRoute.get(
         const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
 
         const clientRedirectURL = path.join(req.headers.referer, 'login' + clientRedirectPath);
-
+        console.log(clientRedirectURL);
         req.session.clientRedirectURL = clientRedirectURL;
 
         next();
@@ -32,7 +32,7 @@ authRoute.get(
     (req, res) => {
         const clientRedirectURL = req.session.clientRedirectURL;
         delete req.session.clientRedirectURL;
-
+        console.log(clientRedirectURL);
         res.redirect(clientRedirectURL);
     }
 );
