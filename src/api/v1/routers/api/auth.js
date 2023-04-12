@@ -13,7 +13,7 @@ authRoute.get(
         const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
 
         const clientRedirectURL = path.join(req.headers.referer, 'login' + clientRedirectPath);
-        console.log(clientRedirectURL);
+        console.log('---log from /google: ', clientRedirectURL);
         req.session.clientRedirectURL = clientRedirectURL;
 
         next();
@@ -27,12 +27,12 @@ authRoute.get(
 authRoute.get(
     '/google/callback',
     passport.authenticate('google', {
-        failureRedirect: '/auth/fail',
+        failureRedirect: '/api/auth/fail',
     }),
     (req, res) => {
         const clientRedirectURL = req.session.clientRedirectURL;
         delete req.session.clientRedirectURL;
-        console.log(clientRedirectURL);
+        console.log('===== logging from callback: ', clientRedirectURL);
         res.redirect(clientRedirectURL);
     }
 );

@@ -62,7 +62,7 @@ app.use(passport.session());
 
 routes(app);
 
-if (['develop'].includes(process.env.NODE_ENV)) {
+if (['develop', 'production'].includes(process.env.NODE_ENV)) {
     https
         .createServer(
             {
