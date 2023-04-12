@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import keys from '../../../config/keys.config';
 
 const s3 = new AWS.S3({
-    // apiVersion: '2012-10-17',
+    apiVersion: '2012-10-17',
     // signatureVersion: 'v4',
     credentials: {
         awsAccessKey: keys.awsAccessKey,
