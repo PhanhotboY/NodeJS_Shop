@@ -1,0 +1,18 @@
+`isModuleDeclaration` has been deprecated, please migrate to `isImportOrExportDeclaration`
+    at isModuleDeclaration (/mnt/d/Workspace/Node/NodeJS_Shop/node_modules/@babel/types/lib/validators/generated/index.js:3940:35)
+    at NodePath.<computed> [as isModuleDeclaration] (/mnt/d/Workspace/Node/NodeJS_Shop/node_modules/@babel/traverse/lib/path/index.js:241:12)
+hello world from port 8080 in production environment
+Error: Notification.belongsToMany called with something that's not a subclass of Sequelize.Model
+    at Function.belongsToMany (/mnt/d/Workspace/Node/NodeJS_Shop/node_modules/sequelize/src/associations/mixin.js:49:13)
+    at Function.associate (/mnt/d/Workspace/Node/NodeJS_Shop/src/api/v1/notification/notification.model.js:14:26)
+    at _callee$ (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:30:31)
+    at tryCatch (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:5:2404)
+    at Generator._invoke (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:5:1964)
+    at Generator.next (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:5:3255)
+    at asyncGeneratorStep (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:13:103)
+    at _next (/mnt/d/Workspace/Node/NodeJS_Shop/src/config/db/model.config.js:15:194)
+>>>>> Database connection has been established successfully.
+>>>>> Redis connection established successfully!
+hello from site
+::1 - - [12/Apr/2023:03:11:53 +0000] "GET / HTTP/1.1" 200 140 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [12/Apr/2023:03:11:55 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"

@@ -4,8 +4,6 @@ const siteRoute = express.Router();
 // const siteController = require('siteController');
 
 siteRoute.get('/', (req, res) => {
-    console.log('hello from site');
-
     res.send(
         `<div>
             Thank you for visit my site! You can view all available APIs from 
