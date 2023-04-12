@@ -32,7 +32,7 @@ authRoute.get(
     (req, res) => {
         const clientRedirectURL = req.session.clientRedirectURL;
         delete req.session.clientRedirectURL;
-        console.log('===== logging from callback: ', clientRedirectURL);
+        console.log('===== logging from callback: ', req.session);
         res.redirect(clientRedirectURL);
     }
 );
