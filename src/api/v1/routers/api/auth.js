@@ -10,9 +10,10 @@ authRoute.get(
     '/google',
     cleanCache,
     async (req, res, next) => {
-        const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
+        // const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
 
-        const clientRedirectURL = path.join(req.headers.referer, 'login' + clientRedirectPath);
+        // const clientRedirectURL = path.join(req.headers.referer, 'login' + clientRedirectPath);
+        const clientRedirectURL = new URL('login', req.headers.referer).href;
 
         req.session.clientRedirectURL = clientRedirectURL;
 
@@ -31,8 +32,8 @@ authRoute.get(
     }),
     (req, res) => {
         const clientRedirectURL = req.session.clientRedirectURL;
-        console.log('===== logging from callback: ', req.session);
         delete req.session.clientRedirectURL;
+
         res.redirect(clientRedirectURL);
     }
 );
