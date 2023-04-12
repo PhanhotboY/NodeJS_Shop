@@ -23,6 +23,8 @@ import db from './config/db/connect.config';
 
 app.use(helmet());
 
+app.enable('trust proxy');
+
 app.use(
     cors({
         origin: true,

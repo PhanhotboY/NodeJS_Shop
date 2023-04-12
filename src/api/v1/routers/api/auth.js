@@ -13,7 +13,7 @@ authRoute.get(
         const clientRedirectPath = decodeURIComponent(req.query.redirect || '/');
 
         const clientRedirectURL = path.join(req.headers.referer, 'login' + clientRedirectPath);
-        console.log('---log from /google: ', clientRedirectURL);
+
         req.session.clientRedirectURL = clientRedirectURL;
 
         next();
